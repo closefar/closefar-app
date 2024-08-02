@@ -31,12 +31,16 @@ const Navbar = () => {
 
   useEffect(() => {
     const setupAccount = async () => {
-      if (!currentUser.addr) return;
-      const status = await scripts.isSetupAndCreatedStorefront(
-        currentUser.addr
-      );
-      !status.setup && (await transactions.setupAccount());
-      !status.storefront && (await transactions.createStoreFront());
+      try {
+        if (!currentUser.addr) return;
+        const status = await scripts.isSetupAndCreatedStorefront(
+          currentUser.addr
+        );
+        !status.setup && (await transactions.setupAccount());
+        !status.storefront && (await transactions.createStoreFront());
+      } catch (error) {
+        console.log(error);
+      }
     };
     setupAccount();
   });

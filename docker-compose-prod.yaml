@@ -1,4 +1,4 @@
-version: "3.8"
+# version: "3.8"
 services:
   mongodb:
     image: "mongo"
@@ -12,12 +12,12 @@ services:
       context: ./server
       dockerfile: Dockerfile
       target: prod
-    ports:
-      - "3002:3002"
     env_file:
       - ./server.env
     depends_on:
       - mongodb
+    volumes:
+      - images:/usr/src/app/images
 
   client:
     build:
@@ -26,10 +26,22 @@ services:
       target: prod
     ports:
       - "3000:3000"
-    stdin_open: true
-    tty: true
+    # stdin_open: true
+    # tty: true
     depends_on:
       - server
 
+  nginx:
+    image: "nginx"
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    environment:
+      - NGINX_PORT=80
+    depends_on:
+      - client
+
 volumes:
   data:
+  images:

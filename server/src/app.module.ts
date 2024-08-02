@@ -7,6 +7,9 @@ import { EventModule } from './event/event.module';
 import { FlowModule } from './flow/flow.module';
 import * as joi from 'joi';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { UploadsModule } from './uploads/uploads.module';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
@@ -30,6 +33,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     ListingModule,
     EventModule,
     FlowModule,
+    UploadsModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'images'),
+      serveRoot: '/images',
+      renderPath: '/images',
+    }),
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService],

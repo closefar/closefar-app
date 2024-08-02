@@ -11,7 +11,7 @@ import Image from "next/image";
 import axios from "axios";
 import * as transactions from "@transactions";
 import useCurrentUser from "hooks/useCurrentUser";
-import { nextAxios } from "config/axios";
+import { nestAxios } from "config/axios";
 import isLogin from "components/IsLogin";
 import countryList from "../constants/list-of-country";
 import nationalityList from "../constants/list-of-nationality";
@@ -25,6 +25,7 @@ import ImageWithBorder from "components/ImageWithBorder";
 import { useAlertDispatch } from "context/AlertContext";
 import { array, z, ZodType } from "zod";
 import { extractPanic } from "lib/extractPanic";
+import { apiPath } from "constants/constants";
 
 const Mint = () => {
   const currentUser = useCurrentUser();
@@ -132,13 +133,13 @@ const Mint = () => {
   };
 
   const { trigger: upload, data: fileLink } = useSWRMutation(
-    "/api/upload",
+    "/api/uploads",
     async () => {
       setActiveStep((cur) => cur + 1);
       // upload image to server and get name and produce link of it
       const fd = new FormData();
       fd.set("file", file);
-      const res = await nextAxios.post("/api/upload", fd, {
+      const res = await nestAxios.post("/uploads", fd, {
         onUploadProgress: (pge) => {
           let percentage = Math.floor((pge.loaded * 100) / pge.total);
           percentage = percentage < 100 ? percentage + 1 : 100;
@@ -146,7 +147,7 @@ const Mint = () => {
         },
       });
       setIsUploadDone(true);
-      const fileLink = "/uploads/" + res.data.fileName;
+      const fileLink = apiPath + "/images/" + res.data.fileName;
       return fileLink;
     },
     {

@@ -48,6 +48,7 @@ const ImageWithBorder: React.FC<IImageWithBorder> = (data) => {
           alt={data.alt}
           width={data.width}
           height={data.height}
+          unoptimized
           priority={true}
           onLoad={() => {
             setIsLoad(true);

@@ -22,6 +22,7 @@ const NftElement: React.FC<INftElement> = ({
   const alertDispatch = useAlertDispatch();
 
   // const [isRemoving, setIsRemoving] = useState(false);
+  console.log(nft.metadata.url);
 
   const { trigger: removeTrigger, isMutating: isRemoving } = useSWRMutation(
     "/transactions/remove-listing",

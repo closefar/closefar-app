@@ -29,7 +29,7 @@ COPY . .
 COPY --from=deps /app/node_modules ./node_modules
 
 ENV NEXT_PUBLIC_ADMIN_COMMISSION=0.1
-ENV NEXT_PUBLIC_API_PATH=http://localhost:3002
+ENV NEXT_PUBLIC_API_PATH=http://localhost/api
 ENV NEXT_PUBLIC_FLOW_NETWORK=testnet
 ENV NEXT_PUBLIC_ADMIN_ADDRESS=0xf4a7067c129ca5b9
 
