@@ -12,43 +12,70 @@ import {
   Button,
   MenuList,
   MenuItem,
+  Spinner,
 } from "@material-tailwind/react";
 import { extractFlowErrorMessage } from "lib/extractFlowErrorMessage";
+import useSWR from "swr";
+import { useAlertDispatch } from "context/AlertContext";
+import useSWRMutation from "swr/mutation";
 
 const Navbar = () => {
   const currentUser = useCurrentUser();
   const [openMenu, setOpenMenu] = useState(false);
+  const alertDispatch = useAlertDispatch();
 
-  const authenticate = async () => {
-    try {
-      await fcl.authenticate();
-      // const status = await scripts.isSetupAndCreatedStorefront(user.addr);
-      // !status.setup && (await transactions.setupAccount());
-      // !status.storefront && (await transactions.createStoreFront());
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    const setupAccount = async () => {
-      try {
-        if (!currentUser.addr) return;
-        const status = await scripts.isSetupAndCreatedStorefront(
-          currentUser.addr
-        );
-        !status.setup && (await transactions.setupAccount());
-        !status.storefront && (await transactions.createStoreFront());
-      } catch (error) {
-        console.log(error);
-        extractFlowErrorMessage(error);
+  const { trigger: authenticate, isMutating: isAuthenticating } =
+    useSWRMutation(
+      "/transactions/authenticate",
+      async (key, options) => {
+        await fcl.authenticate();
+      },
+      {
+        onError(err, key, config) {
+          console.log(err);
+          alertDispatch({
+            type: "open",
+            message: extractFlowErrorMessage(err),
+            class: "error",
+          });
+        },
       }
-    };
-    setupAccount();
-  });
+    );
+
+  const { isLoading: isSetupingAccount } = useSWR(
+    currentUser.addr ? "/transactions/setup-account" : null,
+    async () => {
+      const status = await scripts.isSetupAndCreatedStorefront(
+        currentUser.addr
+      );
+      !status.setup && (await transactions.setupAccount());
+      !status.storefront && (await transactions.createStoreFront());
+    },
+    {
+      revalidateOnFocus: false,
+      onError(err, key, config) {
+        console.log(err);
+        alertDispatch({
+          class: "error",
+          message: extractFlowErrorMessage(err),
+          type: "open",
+        });
+      },
+    }
+  );
 
   return (
     <>
+      {(isSetupingAccount || isAuthenticating) && (
+        <div className="fixed top-0 left-0 w-screen h-screen flex flex-col items-center justify-center z-20 text-white bg-black  bg-opacity-80 backdrop-filter backdrop-blur-lg ">
+          <Spinner className="h-12 w-12" />
+          {isAuthenticating
+            ? "Authenticating your account"
+            : isSetupingAccount
+            ? "Setuping your account"
+            : ""}
+        </div>
+      )}
       <div className="grid sm:grid-cols-3 grid-cols-2 lg:px-28 px-7 md:px-12 py-3">
         <div className="sm:flex items-center justify-start hidden">
           {currentUser.addr}

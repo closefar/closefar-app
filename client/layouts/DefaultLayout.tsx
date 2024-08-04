@@ -1,13 +1,13 @@
 import { useAlert } from "context/AlertContext";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import { Alert } from "@material-tailwind/react";
+import { Alert, Spinner } from "@material-tailwind/react";
 
 export default function DefaultLayout({ children }) {
   const alert = useAlert();
 
   return (
-    <div className="min-h-screen flex flex-col h-fit">
+    <div className="relative min-h-screen flex flex-col h-fit">
       <Navbar />
       <main className="flex-auto min-h-screen">{children}</main>
       <Footer />
