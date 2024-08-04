@@ -12,7 +12,7 @@ import { useAlertDispatch } from "context/AlertContext";
 import { Spinner } from "@material-tailwind/react";
 import { z } from "zod";
 import { adminAddress, adminCommission } from "constants/constants";
-import { extractPanic } from "lib/extractPanic";
+import { extractFlowErrorMessage } from "lib/extractFlowErrorMessage";
 
 const AddToSale = () => {
   const router = useRouter();
@@ -77,7 +77,7 @@ const AddToSale = () => {
         console.log(err);
         alertDispatch({
           type: "open",
-          message: err.message || extractPanic(err),
+          message: extractFlowErrorMessage(err),
           class: "error",
         });
       },

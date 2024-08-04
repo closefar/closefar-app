@@ -6,7 +6,7 @@ import useSWRMutation from "swr/mutation";
 import * as transactions from "@transactions";
 import { useAlertDispatch } from "context/AlertContext";
 import { Spinner } from "@material-tailwind/react";
-import { extractPanic } from "lib/extractPanic";
+import { extractFlowErrorMessage } from "lib/extractFlowErrorMessage";
 
 interface INftElement {
   nft: INFT;
@@ -52,7 +52,7 @@ const NftElement: React.FC<INftElement> = ({
         console.log(err);
         alertDispatch({
           type: "open",
-          message: extractPanic(err),
+          message: extractFlowErrorMessage(err),
           class: "error",
         });
       },

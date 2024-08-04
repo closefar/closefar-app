@@ -10,8 +10,7 @@ import { INFT } from "../types/api/types";
 import useSWR from "swr";
 import { useAlertDispatch } from "context/AlertContext";
 import NftElement from "components/my-collections/NftElement";
-import { extractJSON } from "lib/extractJson";
-import { extractPanic } from "lib/extractPanic";
+import { extractFlowErrorMessage } from "lib/extractFlowErrorMessage";
 
 const MyCollections = () => {
   const [value, setValue] = useState("all");
@@ -28,7 +27,7 @@ const MyCollections = () => {
         console.log(err);
         alertDispatch({
           type: "open",
-          message: extractPanic(err),
+          message: extractFlowErrorMessage(err),
           class: "error",
         });
       },

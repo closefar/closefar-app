@@ -13,6 +13,7 @@ import {
   MenuList,
   MenuItem,
 } from "@material-tailwind/react";
+import { extractFlowErrorMessage } from "lib/extractFlowErrorMessage";
 
 const Navbar = () => {
   const currentUser = useCurrentUser();
@@ -40,6 +41,7 @@ const Navbar = () => {
         !status.storefront && (await transactions.createStoreFront());
       } catch (error) {
         console.log(error);
+        extractFlowErrorMessage(error);
       }
     };
     setupAccount();

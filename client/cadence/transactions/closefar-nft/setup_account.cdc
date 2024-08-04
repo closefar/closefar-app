@@ -37,7 +37,6 @@ transaction {
             )
         }
 
-        // TODO: added by me :)
         if signer.borrow<&CloseFarNFT.NFTMinter>(from: CloseFarNFT.MinterStoragePath) == nil {
             let minter <- CloseFarNFT.createNFTMinter()
             signer.save(<-minter, to: CloseFarNFT.MinterStoragePath)

@@ -22,7 +22,7 @@ export const createListing = async (
   const transaction = replaceImportPathWithAddress(
     SELL_ITEM_WITH_MARKETPLACE_CUT
   );
-  console.log(transaction);
+
   const txId = await fcl.mutate({
     cadence: transaction,
     args: (arg, t) => [

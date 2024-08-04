@@ -10,7 +10,7 @@ import useSWR from "swr";
 import { Spinner } from "@material-tailwind/react";
 import ImageWithBorder from "components/ImageWithBorder";
 import { useAlertDispatch } from "context/AlertContext";
-import { extractPanic } from "lib/extractPanic";
+import { extractFlowErrorMessage } from "lib/extractFlowErrorMessage";
 
 // this page get all details of NFT from flow base on flow id
 const NFTDetails = () => {
@@ -32,7 +32,7 @@ const NFTDetails = () => {
         console.log(err);
         alertDispatch({
           type: "open",
-          message: extractPanic(err),
+          message: extractFlowErrorMessage(err),
           class: "error",
         });
       },

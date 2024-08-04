@@ -1,11 +1,8 @@
-export const extractPanic = (err: string) => {
-  const error = new String(err);
+export const extractPanic = (err) => {
+  let startIndex = err.indexOf("panic(");
+  startIndex = err.indexOf(`"`, startIndex);
 
-  let startIndex = error.indexOf("panic(");
-  if (startIndex === -1) return "an error ocurred";
-  startIndex = error.indexOf(`"`, startIndex);
+  const endIndex = err.indexOf(`"`, startIndex + 1);
 
-  const endIndex = error.indexOf(`"`, startIndex + 1);
-
-  return error.slice(startIndex + 1, endIndex);
+  return err.slice(startIndex + 1, endIndex);
 };

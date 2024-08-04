@@ -24,8 +24,8 @@ import useSWRMutation from "swr/mutation";
 import ImageWithBorder from "components/ImageWithBorder";
 import { useAlertDispatch } from "context/AlertContext";
 import { array, z, ZodType } from "zod";
-import { extractPanic } from "lib/extractPanic";
 import { apiPath } from "constants/constants";
+import { extractFlowErrorMessage } from "lib/extractFlowErrorMessage";
 
 const Mint = () => {
   const currentUser = useCurrentUser();
@@ -175,7 +175,7 @@ const Mint = () => {
         console.log(err);
         alertDispatch({
           type: "open",
-          message: extractPanic(err),
+          message: extractFlowErrorMessage(err),
           class: "error",
         });
       },

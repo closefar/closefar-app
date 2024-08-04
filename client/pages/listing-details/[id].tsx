@@ -11,7 +11,7 @@ import ImageWithBorder from "components/ImageWithBorder";
 import { useAlertDispatch } from "context/AlertContext";
 import useCurrentUser from "hooks/useCurrentUser";
 import * as fcl from "@onflow/fcl";
-import { extractPanic } from "lib/extractPanic";
+import { extractFlowErrorMessage } from "lib/extractFlowErrorMessage";
 
 interface IArg {
   arg: { owner: string; listingId: string };
@@ -66,7 +66,7 @@ const ListingDetails = () => {
         console.log(err);
         alertDispatch({
           type: "open",
-          message: extractPanic(err),
+          message: extractFlowErrorMessage(err),
           class: "error",
         });
       },
