@@ -48,8 +48,10 @@ const Navbar = () => {
       const status = await scripts.isSetupAndCreatedStorefront(
         currentUser.addr
       );
-      !status.setup && (await transactions.setupAccount());
-      !status.storefront && (await transactions.createStoreFront());
+
+      (!status.setup || !status.storefront) &&
+        (await transactions.setupAccountAndCreateStorefront());
+      // !status.storefront && (await transactions.createStoreFront());
     },
     {
       revalidateOnFocus: false,
