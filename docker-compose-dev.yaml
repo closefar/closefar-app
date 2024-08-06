@@ -2,7 +2,7 @@
 
 services:
   mongodb:
-    image: "mongo"
+    image: "mongo:7"
     volumes:
       - data:/data/db
     ports:
@@ -41,7 +41,7 @@ services:
     #   - server
 
   nginx:
-    image: "nginx"
+    image: "nginx:1"
     ports:
       - "80:80"
     volumes:

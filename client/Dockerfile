@@ -28,6 +28,7 @@ WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
 
+# env is injected by .env.production that you must create it beacuse it isn't in git repo
 # ENV NEXT_PUBLIC_ADMIN_COMMISSION=0.1
 # ENV NEXT_PUBLIC_API_PATH=http://localhost/api
 # ENV NEXT_PUBLIC_FLOW_NETWORK=testnet
