@@ -1,6 +1,6 @@
 # version: "3.8"
 # in production mode nextjs must be built and its env variable have to
-# be receive in dockerfile build stage so env file (.env.production) must
+# be receive in dockerfile build stage so env file (.env) must
 # be defined in client directory
 
 services:
@@ -21,7 +21,7 @@ services:
     depends_on:
       - mongodb
     volumes:
-      - images:/usr/src/app/images
+      - images:/app/images
 
   client:
     build:
@@ -37,8 +37,9 @@ services:
     image: "nginx:1"
     ports:
       - "80:80"
+      - "443:443"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx:/etc/nginx
     environment:
       - NGINX_PORT=80
     depends_on:

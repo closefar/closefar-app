@@ -1,6 +1,6 @@
 dist
 .vscode
-.env.local
+.env
 .git
 .gitignore
 node_modules

@@ -1,6 +1,5 @@
 .next
 .vscode
-.env.local
 .git
 .gitignore
 node_modules
