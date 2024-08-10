@@ -11,6 +11,7 @@ import { Spinner } from "@material-tailwind/react";
 import ImageWithBorder from "components/ImageWithBorder";
 import { useAlertDispatch } from "context/AlertContext";
 import { extractFlowErrorMessage } from "lib/extractFlowErrorMessage";
+import Video from "components/Video";
 
 // this page get all details of NFT from flow base on flow id
 const NFTDetails = () => {
@@ -55,14 +56,7 @@ const NFTDetails = () => {
         <h3 className="text-2xl">{Mock[id]?.born}</h3> */}
       </div>
       <div className="w-2/3 sm:w-1/2">
-        {NFTDetails?.metadata.url && (
-          <ImageWithBorder
-            src={NFTDetails?.metadata.url}
-            alt=""
-            width={400}
-            height={400}
-          />
-        )}
+        {NFTDetails?.metadata.url && <Video src={NFTDetails?.metadata.url} />}
       </div>
       {NFTDetails && (
         <div className="w-full flex gap-2 flex-wrap justify-center">

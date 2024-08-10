@@ -7,6 +7,7 @@ import * as transactions from "@transactions";
 import { useAlertDispatch } from "context/AlertContext";
 import { Spinner } from "@material-tailwind/react";
 import { extractFlowErrorMessage } from "lib/extractFlowErrorMessage";
+import ImageOfVideo from "components/ImageOfVideo";
 
 interface INftElement {
   nft: INFT;
@@ -65,7 +66,7 @@ const NftElement: React.FC<INftElement> = ({
         href={`/nft-details/${nft?.id}`}
         className="flex-auto cursor-pointer"
       >
-        <ImageWithBorder
+        <ImageOfVideo
           src={nft?.metadata.url}
           height={300}
           width={300}

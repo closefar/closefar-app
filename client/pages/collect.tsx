@@ -14,6 +14,7 @@ import months from "constants/list-of-month";
 import nationalityList from "../constants/list-of-nationality";
 import languageList from "../constants/list-of-lang";
 import { useAlertDispatch } from "context/AlertContext";
+import ImageOfVideo from "components/ImageOfVideo";
 
 const Collect = () => {
   const [name, setName] = useState("");
@@ -180,7 +181,7 @@ const Collect = () => {
                   className="flex-auto cursor-pointer"
                   href={`/listing-details/${listing._id}`}
                 >
-                  <ImageWithBorder
+                  <ImageOfVideo
                     src={listing.url}
                     alt=""
                     width={200}

@@ -13,6 +13,7 @@ import { Spinner } from "@material-tailwind/react";
 import { z } from "zod";
 import { adminAddress, adminCommission } from "constants/constants";
 import { extractFlowErrorMessage } from "lib/extractFlowErrorMessage";
+import ImageOfVideo from "components/ImageOfVideo";
 
 const AddToSale = () => {
   const router = useRouter();
@@ -92,7 +93,7 @@ const AddToSale = () => {
       <div className="flex flex-col sm:flex-row w-2/3 sm:w-full items-center sm:items-start gap-4">
         <div className="flex flex-col gap-3 w-full">
           <Link href={`/nft-details/${id}`} className="cursor-pointer w-full">
-            <ImageWithBorder
+            <ImageOfVideo
               src={nftDetails.imageUrl}
               alt=""
               width={600}

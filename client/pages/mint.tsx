@@ -26,6 +26,7 @@ import { useAlertDispatch } from "context/AlertContext";
 import { array, z, ZodType } from "zod";
 import { apiPath } from "constants/constants";
 import { extractFlowErrorMessage } from "lib/extractFlowErrorMessage";
+import ImageOfVideo from "components/ImageOfVideo";
 
 const Mint = () => {
   const currentUser = useCurrentUser();
@@ -211,7 +212,7 @@ const Mint = () => {
               >
                 X
               </button>
-              <ImageWithBorder
+              <ImageOfVideo
                 src={URL.createObjectURL(file)}
                 alt=""
                 width={300}
@@ -238,7 +239,7 @@ const Mint = () => {
               <input
                 id="file_picker"
                 type="file"
-                accept="image/png, image/jpeg"
+                accept="video/mp4"
                 onChange={(ev) => setFile(ev.target.files[0])}
                 style={{ display: "none" }}
               ></input>
@@ -451,7 +452,7 @@ const Mint = () => {
         {activeStep === 2 ? (
           <div className="flex sm:flex-row sm:items-start flex-col items-center gap-3">
             <div className="md:w-1/3 sm:w-1/2 w-2/3">
-              <ImageWithBorder
+              <ImageOfVideo
                 src={URL.createObjectURL(file)}
                 alt=""
                 width={300}

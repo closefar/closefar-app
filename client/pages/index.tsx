@@ -5,6 +5,7 @@ import useSWR from "swr";
 import { Spinner } from "@material-tailwind/react";
 import ImageWithBorder from "components/ImageWithBorder";
 import { useAlertDispatch } from "context/AlertContext";
+import ImageOfVideo from "components/ImageOfVideo";
 
 export default function Home() {
   const alertDispatch = useAlertDispatch();
@@ -44,7 +45,7 @@ export default function Home() {
                 className="flex-auto cursor-pointer"
                 href={`/listing-details/${listing?._id}`}
               >
-                <ImageWithBorder
+                <ImageOfVideo
                   src={listing?.url}
                   alt=""
                   width={200}

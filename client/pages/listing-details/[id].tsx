@@ -12,6 +12,7 @@ import { useAlertDispatch } from "context/AlertContext";
 import useCurrentUser from "hooks/useCurrentUser";
 import * as fcl from "@onflow/fcl";
 import { extractFlowErrorMessage } from "lib/extractFlowErrorMessage";
+import Video from "components/Video";
 
 interface IArg {
   arg: { owner: string; listingId: string };
@@ -98,9 +99,7 @@ const ListingDetails = () => {
         )}
       </div>
       <div className="w-2/3 sm:w-1/2">
-        {listing?.url && (
-          <ImageWithBorder src={listing?.url} alt="" width={400} height={400} />
-        )}
+        {listing?.url && <Video src={listing?.url} />}
       </div>
       {listing?.owner && currentUser.addr !== listing?.owner && (
         <button
