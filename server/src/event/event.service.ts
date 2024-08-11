@@ -81,8 +81,7 @@ export class EventService {
       // on 1st iteration, fromBlock will be greater than toBlock due to newly inserted row.
       if (fromBlock > toBlock) {
         // fromBlock = toBlock;
-        setTimeout(() => this.poll(), 5000);
-        return;
+        throw new Error("'From' block is greater than 'To' block");
       }
 
       // getEventsAtBlockHeightRange() has a block limit of 250 blocks.
@@ -131,10 +130,8 @@ export class EventService {
   }
 
   async onEvent(event: any) {
-    console.log(event);
     switch (event.type) {
       case 'A.' + this.adminAddress + '.NFTStorefrontV2.ListingAvailable':
-        console.log(event.type);
         await this.listingService.createBaseOnEvent({
           listingId: event.data.listingResourceID,
           nftId: event.data.nftID,
