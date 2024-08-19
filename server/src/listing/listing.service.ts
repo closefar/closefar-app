@@ -4,12 +4,16 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Listing } from './listing.schema';
 import { UpdateListingDto } from './dto/update-listing.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ListingService {
+  adminAddress = this.configService.get('ADMIN_ADDRESS');
+  adminCommission = this.configService.get('ADMIN_COMMISSION');
   constructor(
     @InjectModel(Listing.name) private listingModel: Model<Listing>,
     private readonly flowService: FlowService,
+    private readonly configService: ConfigService,
   ) {}
 
   async create(createListing: Listing) {
@@ -39,13 +43,17 @@ export class ListingService {
     );
 
     console.log(nftDetails);
+    console.log(this.adminAddress);
+    console.log(this.adminCommission);
 
     let containAdminAddress = false;
     for (const cut of listingDetails.saleCuts) {
-      if (cut.receiver.address === '0xf4a7067c129ca5b9') {
-        (cut.amount * 100) / listingDetails.salePrice >= 10;
+      if (cut.receiver.address === '0x' + this.adminAddress) {
+        // (cut.amount * 100) / listingDetails.salePrice >= 10;
         containAdminAddress =
-          (cut.amount * 100) / listingDetails.salePrice >= 10 ? true : false;
+          (cut.amount * 100) / listingDetails.salePrice >= +this.adminCommission
+            ? true
+            : false;
       }
     }
 

@@ -1,17 +1,17 @@
-import Video from "components/ImageOfVideo";
+import { nestAxios, nestAxiosToken } from "config/axios";
+import { apiPath } from "constants/constants";
 import React from "react";
+import useSWR from "swr";
 
 const Test = () => {
-  return (
-    <div className="h-[600px] w-[600px]">
-      <Video
-        src="http://localhost/api/images/272f5bd3-1f4b-46a2-aea6-8aaad56d97ba-1723286897078.mp4"
-        height={300}
-        width={300}
-        alt=""
-      />
-    </div>
+  const { data, error } = useSWR("aaaaaaa", () =>
+    nestAxiosToken.get(apiPath + "/listing")
   );
+  console.log(data);
+  console.log(error);
+  if (error) return <pre>{JSON.stringify(error, undefined, 2)}</pre>;
+
+  return <pre>{JSON.stringify(data, undefined, 2)}</pre>;
 };
 
 export default Test;

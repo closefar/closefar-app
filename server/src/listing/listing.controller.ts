@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { ListingService } from './listing.service';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('listing')
 export class ListingController {
@@ -41,6 +42,7 @@ export class ListingController {
     return listings;
   }
 
+  @UseGuards(AuthGuard)
   @Get()
   async getAllListing() {
     const listings = await this.listingService.findByFilter({

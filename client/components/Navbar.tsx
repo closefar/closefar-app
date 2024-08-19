@@ -6,6 +6,7 @@ import useCurrentUser from "../hooks/useCurrentUser";
 import * as fcl from "@onflow/fcl";
 import * as transactions from "@transactions";
 import * as scripts from "@scripts";
+import * as api from "@api";
 import {
   Menu,
   MenuHandler,
@@ -18,6 +19,7 @@ import { extractFlowErrorMessage } from "lib/extractFlowErrorMessage";
 import useSWR from "swr";
 import { useAlertDispatch } from "context/AlertContext";
 import useSWRMutation from "swr/mutation";
+import { nestAxiosToken } from "config/axios";
 
 const Navbar = () => {
   const currentUser = useCurrentUser();
@@ -28,7 +30,14 @@ const Navbar = () => {
     useSWRMutation(
       "/transactions/authenticate",
       async (key, options) => {
-        await fcl.authenticate();
+        const user = await fcl.authenticate();
+        const accountProofService = user.services.find(
+          (service) => service.type === "account-proof"
+        );
+
+        const accessToken = await api.verifyUser(accountProofService.data);
+        console.log(accessToken);
+        localStorage.setItem("token", accessToken);
       },
       {
         onError(err, key, config) {
@@ -113,7 +122,10 @@ const Navbar = () => {
                 </li>
                 <li
                   className="min-w-fit cursor-pointer"
-                  onClick={fcl.unauthenticate}
+                  onClick={async () => {
+                    await fcl.unauthenticate();
+                    localStorage.removeItem("token");
+                  }}
                 >
                   Log Out
                 </li>

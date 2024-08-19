@@ -1,4 +1,3 @@
-import { FlowService } from './../flow/flow.service';
 import { Module } from '@nestjs/common';
 import { ListingController } from './listing.controller';
 import { ListingService } from './listing.service';
@@ -10,7 +9,7 @@ import { Listing, ListingSchema } from './listing.schema';
     MongooseModule.forFeature([{ name: Listing.name, schema: ListingSchema }]),
   ],
   controllers: [ListingController],
-  providers: [ListingService, FlowService],
+  providers: [ListingService],
   exports: [ListingService],
 })
 export class ListingModule {}

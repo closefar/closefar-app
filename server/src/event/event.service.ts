@@ -1,5 +1,5 @@
 import { FlowService } from './../flow/flow.service';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Block } from './block.schema';
@@ -9,17 +9,16 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class EventService {
   private readonly stepSize: number = 200;
-  private readonly stepTimeMs: number = 5000;
+  private readonly stepTimeMs: number = 1000;
   private readonly adminAddress = this.configService.get('ADMIN_ADDRESS');
   private readonly eventNames: string[] = [
     'A.' + this.adminAddress + '.NFTStorefrontV2.ListingAvailable',
     'A.' + this.adminAddress + '.NFTStorefrontV2.ListingCompleted',
   ];
-  private readonly adminCommission = this.configService.get('ADMIN_COMMISSION');
 
   constructor(
     @InjectModel(Block.name) private blockModel: Model<Block>,
-    @Inject() private configService: ConfigService,
+    private configService: ConfigService,
     private flowService: FlowService,
     private listingService: ListingService,
   ) {}

@@ -14,7 +14,7 @@ const ImageOfVideo: React.FC<ImageOfVideo> = (data) => {
 
   useEffect(() => {
     video.current.load();
-  });
+  }, []);
 
   return (
     <div className="relative">

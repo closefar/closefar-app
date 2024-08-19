@@ -3,29 +3,25 @@ import * as fcl from '@onflow/fcl';
 import { INftDetails } from 'src/types/types';
 import { ec as EC } from 'elliptic';
 import { SHA3 } from 'sha3';
-import { ConfigService } from '@nestjs/config';
 import { ACCESS_NODE_URLS } from 'src/constants/constants';
+import { FlowModuleOptions } from './flow.interface';
+import { MODULE_OPTIONS_TOKEN } from './flow.module-definition';
 
 @Injectable()
 export class FlowService implements OnModuleInit {
   private readonly ec: EC = new EC('p256');
-  private readonly minterFlowAddress: string = '0xf4a7067c129ca5b9';
-  private readonly minterPrivateKeyHex: string =
-    '96fb2cf5ae5b6bdbe812725c89c25f0e83998ea43d93bbf9b778946a4b3cf584';
-  private readonly minterAccountIndex: string | number = 0;
-  private adminAddress = this.configService.get('ADMIN_ADDRESS');
-  private adminCommission = this.configService.get('ADMIN_COMMISSION');
-  private network = this.configService.get('NETWORK');
 
-  constructor(@Inject() private configService: ConfigService) {}
+  constructor(
+    @Inject(MODULE_OPTIONS_TOKEN) private readonly options: FlowModuleOptions,
+  ) {}
 
   authorizeMinter = () => {
     return async (account: any = {}) => {
-      const user = await this.getAccount(this.minterFlowAddress);
-      const key = user.keys[this.minterAccountIndex];
+      const user = await this.getAccount(this.options.minterFlowAddress);
+      const key = user.keys[this.options.minterAccountIndex];
 
       const sign = this.signWithKey;
-      const pk = this.minterPrivateKeyHex;
+      const pk = this.options.minterPrivateKeyHex;
 
       return {
         ...account,
@@ -180,6 +176,10 @@ export class FlowService implements OnModuleInit {
     });
   }
 
+  async verifyAccountProof(accountProofData) {
+    return fcl.AppUtils.verifyAccountProof('closefar', accountProofData);
+  }
+
   onModuleInit() {
     // .config({
     //   // 'flow.network': 'local',
@@ -191,11 +191,11 @@ export class FlowService implements OnModuleInit {
     //   'flow.network': 'testnet',
     //   'accessNode.api': 'https://rest-testnet.onflow.org',
     // });
-    console.log(`app running on ${this.network}`);
-    const accessApi = ACCESS_NODE_URLS[this.network];
+    console.log(`app running on ${this.options.network}`);
+    const accessApi = ACCESS_NODE_URLS[this.options.network];
     fcl
       .config()
-      .put('flow.network', this.network)
+      .put('flow.network', this.options.network)
       .put('accessNode.api', accessApi)
       .put('decoder.Type', (val) => val.staticType)
       .put('decoder.Enum', (val) => Number(val.fields[0].value.value));
