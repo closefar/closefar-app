@@ -152,6 +152,13 @@
         "emulator": "f8d6e0586b0a20c7",
         "testnet": "631e88ae7f1d7c20"
       }
+    },
+    "Burner": {
+      "source": "./cadence/contracts/utility/Burner.cdc",
+      "aliases": {
+        "emulator": "f8d6e0586b0a20c7",
+        "testnet": "f4a7067c129ca5b9"
+      }
     }
   },
   "networks": {
@@ -189,7 +196,7 @@
       "emulator-account": ["CloseFarNFT", "NFTStorefrontV2"]
     },
     "testnet": {
-      "admin": ["CloseFarNFT", "NFTStorefrontV2"]
+      "admin": ["CloseFarNFT", "NFTStorefrontV2", "Burner"]
     }
   }
 }

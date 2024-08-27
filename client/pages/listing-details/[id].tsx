@@ -149,4 +149,4 @@ const ListingDetails = () => {
   );
 };
 
-export default isLogin(ListingDetails);
+export default ListingDetails;

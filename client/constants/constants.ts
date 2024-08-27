@@ -166,4 +166,11 @@ export const contracts = {
       testnet: "631e88ae7f1d7c20",
     },
   },
+  Burner: {
+    path: "./cadence/contracts/utility/Burner.cdc",
+    address: {
+      local: "ce45dd06c2f77f71",
+      testnet: "f233dcee88fe0abe",
+    },
+  },
 };

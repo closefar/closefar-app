@@ -2,14 +2,13 @@ import CloseFarNFT from "../../contracts/utility/CloseFarNFT.cdc"
 import NonFungibleToken from "../../contracts/utility/NonFungibleToken.cdc"
 import MetadataViews from "../../contracts/utility/MetadataViews.cdc"
       
-pub fun main(account: Address, id: UInt64): &CloseFarNFT.NFT {
-    let CollectionPublic = getAccount(account)
-        .getCapability<&{NonFungibleToken.CollectionPublic, CloseFarNFT.CloseFarNFTCollectionPublic, MetadataViews.ResolverCollection}>(
-                CloseFarNFT.CollectionPublicPath
-            )
-        .borrow()
-        ?? panic("Could not borrow public collection from address")
+access(all) fun main(address: Address, id: UInt64): &{NonFungibleToken.NFT} {
+    let account = getAccount(address)
 
-      let NFT = CollectionPublic.borrowCloseFarNFT(id: id) ?? panic("There is no NFT with this id")
-    return NFT
+    let CollectionPublic = account.capabilities.borrow<&{NonFungibleToken.Collection}>(
+            CloseFarNFT.CollectionPublicPath
+        ) ?? panic("Could not borrow capability from collection at this address")
+
+      let NFT = CollectionPublic.borrowNFT(id) ?? panic("There is no NFT with this id")
+    return NFT 
 }
