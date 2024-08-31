@@ -1,15 +1,21 @@
-import { createContext, useContext, useReducer } from "react";
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  useContext,
+  useReducer,
+} from "react";
 
-const AlertContext = createContext<Alert>(null);
+const AlertContext = createContext<Alert[]>(null);
 
 const AlertDispatchContext =
   createContext<(data: CloseAction | OpenAction) => void>(null);
 
-let d;
+let alertDispatch: Dispatch<CloseAction | OpenAction>;
 
 export function AlertProvider({ children }) {
   const [alert, dispatch] = useReducer(alertReducer, initialAlert);
-  d = dispatch;
+  alertDispatch = dispatch;
   return (
     <AlertContext.Provider value={alert}>
       <AlertDispatchContext.Provider value={dispatch}>
@@ -27,16 +33,32 @@ export function useAlertDispatch() {
   return useContext(AlertDispatchContext);
 }
 
-function alertReducer(alert: Alert, action: CloseAction | OpenAction): Alert {
+function alertReducer(
+  alerts: Alert[],
+  action: CloseAction | OpenAction
+): Alert[] {
   switch (action.type) {
     case "open": {
+      const id = Date.now().toString();
       setTimeout(() => {
-        d({ type: "close" });
+        alertDispatch({ type: "close", id });
       }, 5000);
-      return { message: action.message, class: action.class };
+      console.log(alerts);
+      return [
+        ...alerts,
+        {
+          id,
+          message: action.message,
+          class: action.class,
+          isShow: true,
+        },
+      ];
     }
     case "close": {
-      return {};
+      const showedAlert = alerts.filter((alert) => alert.isShow);
+      return showedAlert.map((alert) =>
+        alert.id === action.id ? { ...alert, isShow: false } : alert
+      );
     }
 
     default: {
@@ -45,19 +67,25 @@ function alertReducer(alert: Alert, action: CloseAction | OpenAction): Alert {
   }
 }
 
-const initialAlert: Alert = {
-  message: "",
-  class: "success",
-};
+const initialAlert: Alert[] = [];
 
 type Action = {
   message: string;
   class: "success" | "error";
   type: "open" | "close";
 };
-type Alert = { message?: string; class?: "success" | "error" };
-type CloseAction = { type: "close" };
-type OpenAction = { message: string; class: "success" | "error"; type: "open" };
+type Alert = {
+  message: string | ReactNode;
+  class: "success" | "error";
+  id: string;
+  isShow: boolean;
+};
+type CloseAction = { type: "close"; id: string };
+type OpenAction = {
+  message: string | ReactNode;
+  class: "success" | "error";
+  type: "open";
+};
 
 {
   /* type Close = { type: "close" };
