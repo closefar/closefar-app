@@ -35,7 +35,9 @@ config({
   "accessNode.api": ACCESS_NODE_URLS[flowNetwork],
   // "discovery.wallet": `http:/localhost:8701/fcl/authn`,
   "discovery.wallet": `https://fcl-discovery.onflow.org/testnet/authn`,
-  "app.detail.icon": "https://avatars.githubusercontent.com/u/62387156?v=4",
-  "app.detail.title": "CLOSEFAR",
+  "discovery.authn.endpoint": `https://fcl-discovery.onflow.org/api/testnet/authn`,
+  // "app.detail.icon": "https://avatars.githubusercontent.com/u/62387156?v=4",
+  // "app.detail.title": "CLOSEFAR",
   "fcl.accountProof.resolver": accountProofDataResolver,
+  "walletconnect.projectId": "60f3e5d3232106199b7e49319cece762",
 }).load({ flowJSON });

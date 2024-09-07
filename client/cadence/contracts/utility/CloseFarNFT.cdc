@@ -333,13 +333,15 @@ access(all) contract CloseFarNFT: NonFungibleToken {
             url: String,
             description: String,
             thumbnail: String,
-            royalties: [MetadataViews.Royalty]
+            royalties: [MetadataViews.Royalty],
+            minter:Address
         ): @CloseFarNFT.NFT {
 
             let metadata: {String: AnyStruct} = {}
             let currentBlock = getCurrentBlock()
             metadata["mintedBlock"] = currentBlock.height
             metadata["mintedTime"] = currentBlock.timestamp
+            metadata["minter"] = minter
 
             // this piece of metadata will be used to show embedding rarity into a trait
             metadata["country"] = country

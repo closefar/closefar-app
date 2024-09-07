@@ -12,6 +12,7 @@ import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
+import { AwsModule } from './aws/aws.module';
 
 const configModule = ConfigModule.forRoot({
   envFilePath: '.env.local',
@@ -23,6 +24,9 @@ const configModule = ConfigModule.forRoot({
     MONGODB_URI: joi.string().required(),
     ADMIN_ACCOUNT_INDEX: joi.number().required(),
     ADMIN_PRIVATE_KEY: joi.string().required(),
+    AWS_ACCESS_KEY_ID: joi.string().required(),
+    AWS_SECRET_ACCESS_KEY: joi.string().required(),
+    AWS_S3_REGION: joi.string().required(),
   }),
 });
 
@@ -70,6 +74,7 @@ const jwtModule = JwtModule.registerAsync({
       serveRoot: '/images',
       renderPath: '/images',
     }),
+    AwsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

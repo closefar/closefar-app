@@ -29,6 +29,7 @@ export class AuthService {
     this.nonces.splice(indexOfNonce, 1);
     const isVerify =
       await this.flowService.verifyAccountProof(accountProofData);
+    console.log(isVerify);
     if (!isVerify) throw new UnauthorizedException();
 
     const payload = { address: accountProofData.address };

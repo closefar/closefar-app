@@ -38,7 +38,7 @@ export const contracts = {
     path: '"../../contracts/utility/CloseFarNFT.cdc"',
     address: {
       local: "f8d6e0586b0a20c7",
-      testnet: "f4a7067c129ca5b9",
+      testnet: "99b1a12bc9c2c1b4",
     },
   },
   FTAllFactory: {
@@ -149,7 +149,7 @@ export const contracts = {
     path: '"../../contracts/NFTStorefrontV2.cdc"',
     address: {
       local: "f8d6e0586b0a20c7",
-      testnet: "f4a7067c129ca5b9",
+      testnet: "99b1a12bc9c2c1b4",
     },
   },
   NonFungibleToken: {

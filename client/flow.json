@@ -25,7 +25,7 @@
       "source": "./cadence/contracts/utility/CloseFarNFT.cdc",
       "aliases": {
         "emulator": "f8d6e0586b0a20c7",
-        "testnet": "f4a7067c129ca5b9"
+        "testnet": "99b1a12bc9c2c1b4"
       }
     },
     "FTAllFactory": {
@@ -136,7 +136,7 @@
       "source": "./cadence/contracts/NFTStorefrontV2.cdc",
       "aliases": {
         "emulator": "f8d6e0586b0a20c7",
-        "testnet": "f4a7067c129ca5b9"
+        "testnet": "99b1a12bc9c2c1b4"
       }
     },
     "NonFungibleToken": {
@@ -157,7 +157,7 @@
       "source": "./cadence/contracts/utility/Burner.cdc",
       "aliases": {
         "emulator": "f8d6e0586b0a20c7",
-        "testnet": "f4a7067c129ca5b9"
+        "testnet": "99b1a12bc9c2c1b4"
       }
     }
   },
@@ -184,7 +184,7 @@
       }
     },
     "admin": {
-      "address": "f4a7067c129ca5b9",
+      "address": "99b1a12bc9c2c1b4",
       "key": {
         "type": "file",
         "location": "admin.key"

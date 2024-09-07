@@ -9,7 +9,7 @@ import MetadataViews from "../../contracts/utility/MetadataViews.cdc"
 
 
 transaction(
-    recipient: Address,
+    // recipient: Address,
     name: String,
     country: String,
     yearOfBirth: String,
@@ -37,17 +37,20 @@ transaction(
 
     prepare(signer: auth(BorrowValue) &Account) {
 
-        let collectionData = CloseFarNFT.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
-            ?? panic("ViewResolver does not resolve NFTCollectionData view")
+        // let collectionData = CloseFarNFT.resolveContractView(resourceType: nil, viewType: Type<MetadataViews.NFTCollectionData>()) as! MetadataViews.NFTCollectionData?
+        //     ?? panic("ViewResolver does not resolve NFTCollectionData view")
         
         // borrow a reference to the NFTMinter resource in storage
         self.minter = signer.storage.borrow<&CloseFarNFT.NFTMinter>(from: CloseFarNFT.MinterStoragePath)
             ?? panic("Account does not store an object at the specified path")
 
         // Borrow the recipient's public NFT collection reference
-        self.recipientCollectionRef = getAccount(recipient).capabilities.borrow<&{NonFungibleToken.Receiver}>(
-                collectionData.publicPath
+        self.recipientCollectionRef = signer.storage.borrow<&{NonFungibleToken.Receiver}>(
+               from: CloseFarNFT.CollectionStoragePath
             ) ?? panic("Could not get receiver reference to the NFT Collection")
+        // self.recipientCollectionRef = getAccount(recipient).capabilities.borrow<&{NonFungibleToken.Receiver}>(
+        //         CloseFarNFT.CollectionPublicPath
+        //     ) ?? panic("Could not get receiver reference to the NFT Collection")
     }
 
     pre {
@@ -94,7 +97,9 @@ transaction(
             url: url,
             description: description,
             thumbnail: thumbnail,
-            royalties: royalties
+            royalties: royalties,
+            minter: self.recipientCollectionRef.owner!.address
+
         )
         self.recipientCollectionRef.deposit(token: <-mintedNFT)
     }

@@ -7,8 +7,6 @@ import {
 } from "@material-tailwind/react";
 import React, { useState } from "react";
 import BreakLine from "../components/BreakLine";
-import Image from "next/image";
-import axios from "axios";
 import * as transactions from "@transactions";
 import useCurrentUser from "hooks/useCurrentUser";
 import { nestAxios } from "config/axios";
@@ -21,15 +19,13 @@ import last100Years from "../constants/last-100-years";
 import InputWithSearch from "../components/InputWithSearch";
 import { useRouter } from "next/router";
 import useSWRMutation from "swr/mutation";
-import ImageWithBorder from "components/ImageWithBorder";
 import { useAlertDispatch } from "context/AlertContext";
-import { array, z, ZodType } from "zod";
+import { z } from "zod";
 import { apiPath } from "constants/constants";
 import { extractFlowErrorMessage } from "lib/extractFlowErrorMessage";
 import ImageOfVideo from "components/ImageOfVideo";
 
 const Mint = () => {
-  const currentUser = useCurrentUser();
   const router = useRouter();
 
   const formSchema = z.object({
@@ -140,7 +136,10 @@ const Mint = () => {
       // upload image to server and get name and produce link of it
       const fd = new FormData();
       fd.set("file", file);
-      const res = await nestAxios.post("/uploads", fd, {
+      const {
+        data: { uploadUrl, key },
+      } = await nestAxios.post("/aws/get-signed-url", { fileName: file.name });
+      const res = await nestAxios.put(uploadUrl, fd, {
         onUploadProgress: (pge) => {
           let percentage = Math.floor((pge.loaded * 100) / pge.total);
           percentage = percentage < 100 ? percentage + 1 : 100;
@@ -148,7 +147,8 @@ const Mint = () => {
         },
       });
       setIsUploadDone(true);
-      const fileLink = apiPath + "/images/" + res.data.fileName;
+      const fileLink =
+        "https://testnet-closefar.s3.ca-central-1.amazonaws.com/" + key;
       return fileLink;
     },
     {
@@ -163,10 +163,13 @@ const Mint = () => {
     "/transactions/mint-nft",
     async () => {
       // now mint nft with name and link of nft for current user
-      await transactions.mintNFT(currentUser.addr, {
-        ...formData,
-        url: fileLink,
-      });
+      await transactions.mintNFT(
+        // currentUser.addr,
+        {
+          ...formData,
+          url: fileLink,
+        }
+      );
 
       alertDispatch({ type: "open", message: "NFT minted.", class: "success" });
       router.replace("/my-collections");

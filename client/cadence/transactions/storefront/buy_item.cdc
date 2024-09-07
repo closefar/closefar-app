@@ -1,4 +1,4 @@
-import ExampleToken from "../../contracts/utility/ExampleToken.cdc"
+import FlowToken from "../../contracts/utility/FlowToken.cdc"
 import FungibleToken from "../../contracts/utility/FungibleToken.cdc"
 import NonFungibleToken from "../../contracts/utility/NonFungibleToken.cdc"
 import CloseFarNFT from "../../contracts/utility/CloseFarNFT.cdc"
@@ -32,8 +32,8 @@ transaction(listingResourceID: UInt64, storefrontAddress: Address, commissionRec
         let price = self.listing.getDetails().salePrice
 
         // Access the vault of the buyer to pay the sale price of the listing.
-        let mainVault = acct.storage.borrow<auth(FungibleToken.Withdraw) &ExampleToken.Vault>(from: /storage/exampleTokenVault)
-            ?? panic("Cannot borrow ExampleToken vault from acct storage")
+        let mainVault = acct.storage.borrow<auth(FungibleToken.Withdraw) &FlowToken.Vault>(from: /storage/flowTokenVault)
+            ?? panic("Cannot borrow FlowToken vault from acct storage")
         self.paymentVault <- mainVault.withdraw(amount: price)
 
         // Access the buyer's NFT collection to store the purchased NFT.
@@ -48,9 +48,9 @@ transaction(listingResourceID: UInt64, storefrontAddress: Address, commissionRec
         if commissionRecipient != nil && commissionAmount != 0.0 {
             // Access the capability to receive the commission.
             let _commissionRecipientCap = getAccount(commissionRecipient!).capabilities.get<&{FungibleToken.Receiver}>(
-                    /public/exampleTokenReceiver
+                    /public/flowTokenReceiver
                 )
-            assert(_commissionRecipientCap.check(), message: "Commission Recipient doesn't have exampletoken receiving capability")
+            assert(_commissionRecipientCap.check(), message: "Commission Recipient doesn't have flowtoken receiving capability")
             self.commissionRecipientCap = _commissionRecipientCap
         } else if commissionAmount == 0.0 {
             self.commissionRecipientCap = nil

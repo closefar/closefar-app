@@ -126,20 +126,19 @@ export class FlowService implements OnModuleInit {
         // import MetadataViews from 0xf8d6e0586b0a20c7
 
         import NonFungibleToken from 0x631e88ae7f1d7c20
-        import CloseFarNFT from 0xf4a7067c129ca5b9
+        import CloseFarNFT from 0x99b1a12bc9c2c1b4
         import MetadataViews from 0x631e88ae7f1d7c20
         
-        pub fun main(account: Address, id: UInt64): &CloseFarNFT.NFT {
-            let CollectionPublic = getAccount(account)
-                .getCapability<&{NonFungibleToken.CollectionPublic, CloseFarNFT.CloseFarNFTCollectionPublic, MetadataViews.ResolverCollection}>(
-                        CloseFarNFT.CollectionPublicPath
-                    )
-                .borrow()
-                ?? panic("Could not borrow public collection from address")
-        
-              let NFT = CollectionPublic.borrowCloseFarNFT(id: id) ?? panic("There is no NFT with this id")
-            return NFT
-        }
+        access(all) fun main(address: Address, id: UInt64): &{NonFungibleToken.NFT} {
+          let account = getAccount(address)
+
+          let CollectionPublic = account.capabilities.borrow<&{NonFungibleToken.Collection}>(
+                  CloseFarNFT.CollectionPublicPath
+              ) ?? panic("Could not borrow capability from collection at this address")
+
+            let NFT = CollectionPublic.borrowNFT(id) ?? panic("There is no NFT with this id")
+        return NFT 
+}
       `,
       args: (arg, t) => [arg(ownerAddress, t.Address), arg(nftId, t.UInt64)],
     });
@@ -149,24 +148,20 @@ export class FlowService implements OnModuleInit {
     return fcl.query({
       cadence: `
       // import NFTStorefrontV2 from 0xf8d6e0586b0a20c7
-      import NFTStorefrontV2 from 0xf4a7067c129ca5b9
+      import NFTStorefrontV2 from 0x99b1a12bc9c2c1b4
 
 
       // This script returns the details for a listing within a storefront
       
-      pub fun main(account: Address, listingResourceID: UInt64): NFTStorefrontV2.ListingDetails {
-          let storefrontRef = getAccount(account)
-              .getCapability<&NFTStorefrontV2.Storefront{NFTStorefrontV2.StorefrontPublic}>(
-                  NFTStorefrontV2.StorefrontPublicPath
-              )
-              .borrow()
-              ?? panic("Could not borrow public storefront from address")
+      access(all) fun main(account: Address, listingResourceID: UInt64): NFTStorefrontV2.ListingDetails {
+        let storefrontRef = getAccount(account).capabilities.borrow<&{NFTStorefrontV2.StorefrontPublic}>(
+                NFTStorefrontV2.StorefrontPublicPath
+            ) ?? panic("Could not borrow public storefront from address")
+        let listing = storefrontRef.borrowListing(listingResourceID: listingResourceID)
+            ?? panic("No listing with that ID")
       
-          let listing = storefrontRef.borrowListing(listingResourceID: listingResourceID)
-              ?? panic("No item with that ID")
-          
-          return listing.getDetails()
-      }
+      return listing.getDetails()
+}
       
       `,
       args: (arg, t) => [

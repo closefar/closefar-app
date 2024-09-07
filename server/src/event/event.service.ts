@@ -121,7 +121,7 @@ export class EventService {
         currentBlockHeight: toBlock,
       });
     } catch (error) {
-      console.error(error);
+      console.error("this is error",error);
     } finally {
       // recursively call self to continue polling
       setTimeout(() => this.poll(), this.stepTimeMs);

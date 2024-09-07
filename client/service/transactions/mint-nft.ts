@@ -4,7 +4,7 @@ import MINT_NFT from "./../../cadence/transactions/closefar-nft/mint_nft.cdc";
 import { replaceImportPathWithAddress } from "lib/replaceImportPathWithAddress";
 
 export const mintNFT = async (
-  userAddress: string,
+  // userAddress: string,
   nftDetails: Omit<INFT, "id" | "uuid" | "metadata"> & Metadata
 ) => {
   const transaction = replaceImportPathWithAddress(MINT_NFT);
@@ -12,7 +12,7 @@ export const mintNFT = async (
   const txId = await fcl.mutate({
     cadence: transaction,
     args: (arg, t) => [
-      arg(userAddress, t.Address),
+      // arg(userAddress, t.Address),
       arg(nftDetails.name, t.String),
       arg(nftDetails.country, t.String),
       arg(nftDetails.yearOfBirth, t.String),

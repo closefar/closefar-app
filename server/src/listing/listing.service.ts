@@ -43,6 +43,7 @@ export class ListingService {
     );
 
     console.log(nftDetails);
+    console.log(listingDetails);
     console.log(this.adminAddress);
     console.log(this.adminCommission);
 
@@ -57,7 +58,14 @@ export class ListingService {
       }
     }
 
-    this.create({
+    console.log({
+      name: nftDetails.name,
+      ...nftDetails.metadata,
+      ...data,
+      containAdminAddress,
+    });
+
+    await this.create({
       name: nftDetails.name,
       ...nftDetails.metadata,
       ...data,

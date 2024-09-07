@@ -34,7 +34,11 @@ const Navbar = () => {
         const accountProofService = user.services.find(
           (service) => service.type === "account-proof"
         );
-
+        const isVerify = await fcl.AppUtils.verifyAccountProof(
+          "closefar",
+          accountProofService.data
+        );
+        console.log(isVerify);
         const accessToken = await api.verifyUser(accountProofService.data);
         console.log(accessToken);
         localStorage.setItem("token", accessToken);
