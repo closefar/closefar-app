@@ -13,6 +13,8 @@ import useCurrentUser from "hooks/useCurrentUser";
 import * as fcl from "@onflow/fcl";
 import { extractFlowErrorMessage } from "lib/extractFlowErrorMessage";
 import Video from "components/Video";
+import { flowdriveLink } from "constants/constants";
+import Link from "next/link";
 
 interface IArg {
   arg: { owner: string; listingId: string };
@@ -51,13 +53,24 @@ const ListingDetails = () => {
   } = useSWRMutation(
     "/transactions/purchase-listing",
     async (key, options: IArg) => {
-      await transactions.purchaseListing(
+      const { txId } = await transactions.purchaseListing(
         parseInt(options.arg.listingId),
         options.arg.owner
       );
       alertDispatch({
         type: "open",
-        message: "listing purchased",
+        message: (
+          <div>
+            {"listing purchased. to follow transaction "}
+            <Link
+              className="text-light-blue-900"
+              href={flowdriveLink + txId}
+              target="_blank"
+            >
+              click here
+            </Link>
+          </div>
+        ),
         class: "success",
       });
       router.replace("/my-collections");

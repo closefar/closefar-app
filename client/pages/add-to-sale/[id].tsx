@@ -11,7 +11,11 @@ import ImageWithBorder from "components/ImageWithBorder";
 import { useAlertDispatch } from "context/AlertContext";
 import { Spinner } from "@material-tailwind/react";
 import { z } from "zod";
-import { adminAddress, adminCommission } from "constants/constants";
+import {
+  adminAddress,
+  adminCommission,
+  flowdriveLink,
+} from "constants/constants";
 import { extractFlowErrorMessage } from "lib/extractFlowErrorMessage";
 import ImageOfVideo from "components/ImageOfVideo";
 
@@ -59,7 +63,7 @@ const AddToSale = () => {
       const priceUFix68 = formData.price.includes(".")
         ? formData.price
         : parseFloat(formData.price).toFixed(1).toString();
-      await transactions.createListing(
+      const { txId } = await transactions.createListing(
         parseInt(id),
         priceUFix68,
         new Date().setMonth(10),
@@ -68,7 +72,18 @@ const AddToSale = () => {
       );
       alertDispatch({
         type: "open",
-        message: "listing Created",
+        message: (
+          <div>
+            {"Listing created. to follow transaction "}
+            <Link
+              className="text-light-blue-900"
+              href={flowdriveLink + txId}
+              target="_blank"
+            >
+              click here
+            </Link>
+          </div>
+        ),
         class: "success",
       });
       router.replace("/my-collections");

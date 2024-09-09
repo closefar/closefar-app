@@ -35,5 +35,7 @@ export const createListing = async (
     ],
     limit: 999,
   });
-  return fcl.tx(txId).onceSealed();
+
+  const txStatus = await fcl.tx(txId).onceSealed();
+  return { txId, txStatus };
 };

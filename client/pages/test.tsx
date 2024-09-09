@@ -27,7 +27,7 @@ const Test = () => {
             type: "open",
             message: (
               <div>
-                please &nbsp;
+                {"please "}
                 <Link
                   className="text-light-blue-900"
                   href="https://www.google.com"
@@ -35,7 +35,7 @@ const Test = () => {
                 >
                   click here
                 </Link>
-                &nbsp; to navigate
+                to navigate
               </div>
             ),
             class: "success",

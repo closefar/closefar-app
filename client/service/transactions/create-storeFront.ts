@@ -8,9 +8,10 @@ export const createStoreFront = async () => {
   const txId = await fcl.mutate({
     cadence: transaction,
     limit: 999,
-    proposer: fcl.authz, // optional - default is fcl.authz
-    payer: fcl.authz, // optional - default is fcl.authz
-    authorizations: [fcl.authz], // optional - default is [fcl.authz]
+    // proposer: fcl.authz, // optional - default is fcl.authz
+    // payer: fcl.authz, // optional - default is fcl.authz
+    // authorizations: [fcl.authz], // optional - default is [fcl.authz]
   });
-  return fcl.tx(txId).onceSealed();
+  const txStatus = await fcl.tx(txId).onceSealed();
+  return { txId, txStatus };
 };

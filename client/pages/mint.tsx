@@ -9,7 +9,7 @@ import React, { useState } from "react";
 import BreakLine from "../components/BreakLine";
 import * as transactions from "@transactions";
 import useCurrentUser from "hooks/useCurrentUser";
-import { nestAxios } from "config/axios";
+import { nestAxios, nestAxiosToken } from "config/axios";
 import isLogin from "components/IsLogin";
 import countryList from "../constants/list-of-country";
 import nationalityList from "../constants/list-of-nationality";
@@ -21,9 +21,10 @@ import { useRouter } from "next/router";
 import useSWRMutation from "swr/mutation";
 import { useAlertDispatch } from "context/AlertContext";
 import { z } from "zod";
-import { apiPath } from "constants/constants";
+import { apiPath, flowdriveLink } from "constants/constants";
 import { extractFlowErrorMessage } from "lib/extractFlowErrorMessage";
 import ImageOfVideo from "components/ImageOfVideo";
+import Link from "next/link";
 
 const Mint = () => {
   const router = useRouter();
@@ -138,7 +139,9 @@ const Mint = () => {
       fd.set("file", file);
       const {
         data: { uploadUrl, key },
-      } = await nestAxios.post("/aws/get-signed-url", { fileName: file.name });
+      } = await nestAxiosToken.post("/aws/get-signed-url", {
+        fileName: file.name,
+      });
       const res = await nestAxios.put(uploadUrl, fd, {
         onUploadProgress: (pge) => {
           let percentage = Math.floor((pge.loaded * 100) / pge.total);
@@ -163,15 +166,29 @@ const Mint = () => {
     "/transactions/mint-nft",
     async () => {
       // now mint nft with name and link of nft for current user
-      await transactions.mintNFT(
+      const { txId } = await transactions.mintNFT(
         // currentUser.addr,
         {
           ...formData,
           url: fileLink,
         }
       );
-
-      alertDispatch({ type: "open", message: "NFT minted.", class: "success" });
+      alertDispatch({
+        type: "open",
+        message: (
+          <div>
+            {"NFT minted. to follow transaction "}
+            <Link
+              className="text-light-blue-900"
+              href={flowdriveLink + txId}
+              target="_blank"
+            >
+              click here
+            </Link>
+          </div>
+        ),
+        class: "success",
+      });
       router.replace("/my-collections");
     },
     {

@@ -16,5 +16,6 @@ export const removeListing = async (listingResourceID: number) => {
     args: (arg, t) => [arg(listingResourceID, t.UInt64)],
     limit: 999,
   });
-  return fcl.tx(txId).onceSealed();
+  const txStatus = await fcl.tx(txId).onceSealed();
+  return { txId, txStatus };
 };

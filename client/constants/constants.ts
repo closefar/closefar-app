@@ -12,6 +12,8 @@ export const apiPath = process.env.NEXT_PUBLIC_API_PATH;
 // if (!process.env.NEXT_PUBLIC_API_PATH)
 //   throw new Error("api path environment variable doesn't set");
 
+export const flowdriveLink = "https://testnet.flowdiver.io/tx/";
+
 export const contracts = {
   CapabilityDelegator: {
     path: '"../../contracts/hybrid-custody/CapabilityDelegator.cdc"',
