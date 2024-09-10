@@ -1,9 +1,10 @@
 import { useAlert, useAlertDispatch } from "context/AlertContext";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import { Alert, Spinner } from "@material-tailwind/react";
+import { Alert } from "@material-tailwind/react";
+import { ReactNode } from "react";
 
-export default function DefaultLayout({ children }) {
+export default function DefaultLayout({ children }: { children: ReactNode }) {
   const alerts = useAlert();
   const alertDispatch = useAlertDispatch();
 
@@ -13,7 +14,7 @@ export default function DefaultLayout({ children }) {
       <main className="flex-auto min-h-screen">{children}</main>
       <Footer />
       <div className="fixed left-1/2 -translate-x-1/2 bottom-[5%] flex flex-col items-center gap-2 z-50">
-        {alerts.map((alert, index) => (
+        {alerts.map((alert) => (
           <Alert
             key={alert.id}
             className={`w-fit rounded-none border-l-4 font-medium text-[#212925]

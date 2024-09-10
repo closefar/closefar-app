@@ -1,5 +1,6 @@
-import { INFT, Metadata } from "../../types/api/types";
 import * as fcl from "@onflow/fcl";
+import * as t from "@onflow/types";
+import { INFT, Metadata } from "../../types/api/types";
 import MINT_NFT from "./../../cadence/transactions/closefar-nft/mint_nft.cdc";
 import { replaceImportPathWithAddress } from "lib/replaceImportPathWithAddress";
 
@@ -11,25 +12,24 @@ export const mintNFT = async (
 
   const txId = await fcl.mutate({
     cadence: transaction,
-    args: (arg, t) => [
-      // arg(userAddress, t.Address),
-      arg(nftDetails.name, t.String),
-      arg(nftDetails.country, t.String),
-      arg(nftDetails.yearOfBirth, t.String),
-      arg(nftDetails.monthOfBirth, t.String),
-      arg(nftDetails.dayOfBirth, t.String),
-      arg(nftDetails.nationality, t.String),
-      arg(nftDetails.state, t.String),
-      arg(nftDetails.language, t.String),
-      arg(nftDetails.pronounce, t.String),
-      arg(nftDetails.tags, t.Array(t.String)),
-      arg(nftDetails.job, t.String),
-      arg(nftDetails.url, t.String),
-      arg("", t.String),
-      arg("", t.String),
-      arg([], t.Array(t.UFix64)),
-      arg([], t.Array(t.String)),
-      arg([], t.Array(t.Address)),
+    args: () => [
+      fcl.arg(nftDetails.name, t.String),
+      fcl.arg(nftDetails.country, t.String),
+      fcl.arg(nftDetails.yearOfBirth, t.String),
+      fcl.arg(nftDetails.monthOfBirth, t.String),
+      fcl.arg(nftDetails.dayOfBirth, t.String),
+      fcl.arg(nftDetails.nationality, t.String),
+      fcl.arg(nftDetails.state, t.String),
+      fcl.arg(nftDetails.language, t.String),
+      fcl.arg(nftDetails.pronounce, t.String),
+      fcl.arg(nftDetails.tags, t.Array(t.String)),
+      fcl.arg(nftDetails.job, t.String),
+      fcl.arg(nftDetails.url, t.String),
+      fcl.arg("", t.String),
+      fcl.arg("", t.String),
+      fcl.arg([], t.Array(t.UFix64)),
+      fcl.arg([], t.Array(t.String)),
+      fcl.arg([], t.Array(t.Address)),
     ],
     limit: 999,
   });

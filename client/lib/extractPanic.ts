@@ -1,4 +1,4 @@
-export const extractPanic = (err) => {
+export const extractPanic = (err: string | String) => {
   let startIndex = err.indexOf("panic(");
   startIndex = err.indexOf(`"`, startIndex);
 

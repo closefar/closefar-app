@@ -44,7 +44,7 @@ const Edit = () => {
             className="[&>span]:pl-8"
             variant="static"
             value={country}
-            onChange={(val) => setCountry(val)}
+            onChange={(val) => setCountry(val || "")}
             label="Country"
           >
             <Option className="font-ysabeau" value="all">
@@ -71,7 +71,7 @@ const Edit = () => {
             className="[&>span]:pl-8"
             variant="static"
             value={yearOfBirth}
-            onChange={(val) => setYearOfBirth(val)}
+            onChange={(val) => setYearOfBirth(val || "")}
             label="Year of Birth"
           >
             <Option className="font-ysabeau" value="all">
@@ -98,7 +98,7 @@ const Edit = () => {
             className="[&>span]:pl-8"
             variant="static"
             value={monthOfBirth}
-            onChange={(val) => setMonthOfBirth(val)}
+            onChange={(val) => setMonthOfBirth(val || "")}
             label="Month of Birth"
           >
             <Option className="font-ysabeau" value="all">
@@ -125,7 +125,7 @@ const Edit = () => {
             className="[&>span]:pl-8"
             variant="static"
             value={dayOfBirth}
-            onChange={(val) => setDayOfBirth(val)}
+            onChange={(val) => setDayOfBirth(val || "")}
             label="Day of Birth"
           >
             <Option className="font-ysabeau" value="all">
@@ -152,7 +152,7 @@ const Edit = () => {
             className="[&>span]:pl-8"
             variant="static"
             value={nationality}
-            onChange={(val) => setNationality(val)}
+            onChange={(val) => setNationality(val || "")}
             label="Nationality"
           >
             <Option className="font-ysabeau" value="all">
@@ -179,7 +179,7 @@ const Edit = () => {
             className="[&>span]:pl-8"
             variant="static"
             value={state}
-            onChange={(val) => setState(val)}
+            onChange={(val) => setState(val || "")}
             label="State"
           >
             <Option className="font-ysabeau" value="all">
@@ -206,7 +206,7 @@ const Edit = () => {
             className="[&>span]:pl-8"
             variant="static"
             value={language}
-            onChange={(val) => setLanguage(val)}
+            onChange={(val) => setLanguage(val || "")}
             label="Language"
           >
             <Option className="font-ysabeau" value="all">
@@ -233,7 +233,7 @@ const Edit = () => {
             className="[&>span]:pl-8"
             variant="static"
             value={pronounce}
-            onChange={(val) => setPronounce(val)}
+            onChange={(val) => setPronounce(val || "")}
             label="Pronounce"
           >
             <Option className="font-ysabeau" value="all">
@@ -269,7 +269,7 @@ const Edit = () => {
             className="[&>span]:pl-8"
             variant="static"
             value={job}
-            onChange={(val) => setJob(val)}
+            onChange={(val) => setJob(val || "")}
             label="Jobs"
           >
             <Option className="font-ysabeau" value="all">

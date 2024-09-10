@@ -1,4 +1,5 @@
 import * as fcl from "@onflow/fcl";
+import * as t from "@onflow/types";
 import BUY_ITEM from "../../cadence/transactions/storefront/buy_item.cdc";
 import { replaceImportPathWithAddress } from "lib/replaceImportPathWithAddress";
 
@@ -16,10 +17,10 @@ export const purchaseListing = async (
 
   const txId = await fcl.mutate({
     cadence: transaction,
-    args: (arg, t) => [
-      arg(listingResourceID, t.UInt64),
-      arg(storefrontAddress, t.Address),
-      arg(null, t.Optional(t.Address)),
+    args: () => [
+      fcl.arg(listingResourceID, t.UInt64),
+      fcl.arg(storefrontAddress, t.Address),
+      fcl.arg(null, t.Optional(t.Address)),
     ],
     limit: 999,
   });

@@ -174,7 +174,8 @@ const Collect = () => {
       </div>
       <div className="flex flex-col gap-2 w-full mt-6">
         <div className="grid grid-cols-3 gap-4">
-          {listings?.length > 0 &&
+          {listings &&
+            listings.length > 0 &&
             listings.map((listing) => (
               <div key={listing._id}>
                 <Link

@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import Image from "next/image";
 import Link from "next/link";
 import BreakLine from "../../components/BreakLine";
 import * as transactions from "@transactions";
 import useSWRMutation from "swr/mutation";
 import isLogin from "components/IsLogin";
 import isOwner from "components/IsOwner";
-import ImageWithBorder from "components/ImageWithBorder";
 import { useAlertDispatch } from "context/AlertContext";
 import { Spinner } from "@material-tailwind/react";
 import { z } from "zod";
@@ -35,13 +33,12 @@ const AddToSale = () => {
   const [formData, setFormData] = useState<Required<formType>>({
     price: "",
   });
-  // const [isCreating, setIsCreating] = useState(false);
 
   const alertDispatch = useAlertDispatch();
 
   const [formError, setFormError] = useState<{
     [key in keyof formType]: string[];
-  }>({});
+  }>();
 
   const { trigger, isMutating: isCreating } = useSWRMutation(
     "/transactions/create-listing",
@@ -53,23 +50,29 @@ const AddToSale = () => {
       };
       if (!parsedForm.success) {
         parsedForm.error.issues.forEach((error) =>
-          error.path.forEach((path) => errorObject[path].push(error.message))
+          error.path.forEach((path) =>
+            errorObject[path as keyof typeof errorObject].push(error.message)
+          )
         );
         setFormError(errorObject);
         return;
       }
-      setFormError({});
+      setFormError(undefined);
 
       const priceUFix68 = formData.price.includes(".")
         ? formData.price
         : parseFloat(formData.price).toFixed(1).toString();
-      const { txId } = await transactions.createListing(
-        parseInt(id),
-        priceUFix68,
-        new Date().setMonth(10),
-        adminAddress,
-        adminCommission
-      );
+      const res =
+        adminAddress && adminCommission
+          ? await transactions.createListing(
+              parseInt(id),
+              priceUFix68,
+              new Date().setMonth(10),
+              adminAddress,
+              adminCommission
+            )
+          : undefined;
+
       alertDispatch({
         type: "open",
         message: (
@@ -77,7 +80,7 @@ const AddToSale = () => {
             {"Listing created. to follow transaction "}
             <Link
               className="text-light-blue-900"
-              href={flowdriveLink + txId}
+              href={flowdriveLink + res?.txId}
               target="_blank"
             >
               click here
@@ -132,7 +135,11 @@ const AddToSale = () => {
                 setFormData((prev) => ({ ...prev, price: e.target.value }))
               }
             />
-            <BreakLine error={formError.price?.length > 0} />
+            <BreakLine
+              error={
+                formError?.price.length ? formError.price.length > 0 : undefined
+              }
+            />
             <div className="text-red-500 text-xs ml-[5%]">
               {formError?.price?.map((err) => (
                 <span key={err}>{err}</span>
@@ -140,7 +147,7 @@ const AddToSale = () => {
             </div>
           </div>
           <button
-            onClick={trigger}
+            onClick={() => trigger()}
             className="sm:self-end self-center bg-gray-50 hover:bg-gray-300 py-2 px-4 transition-all rounded-lg text-[#212925] font-ysabeau normal-case"
           >
             {isCreating ? <Spinner className="h-4 w-4" /> : "Add to Sale list"}

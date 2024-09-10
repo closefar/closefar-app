@@ -1,4 +1,3 @@
-import { Card, CardHeader } from "@material-tailwind/react";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
 
@@ -13,7 +12,7 @@ interface IImageWithBorder {
 const ImageWithBorder: React.FC<IImageWithBorder> = (data) => {
   const [isLoad, setIsLoad] = useState(false);
   // const [isShow, setIsShow] = useState(false);
-  const image = useRef<HTMLDivElement>();
+  const image = useRef<HTMLDivElement>(null);
 
   return (
     <div className="relative">

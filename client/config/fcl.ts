@@ -1,9 +1,7 @@
 import { config } from "@onflow/fcl";
-import { ACCESS_NODE_URLS } from "../constants";
+import { ACCESS_NODE_URLS, flowNetwork } from "../constants/constants";
 import flowJSON from "../flow.json";
 import * as api from "@api";
-
-const flowNetwork = process.env.NEXT_PUBLIC_FLOW_NETWORK;
 
 console.log("Dapp running on network:", flowNetwork);
 

@@ -1,4 +1,4 @@
-import { errorCodeToMessage } from "./../constants/errorCodeToMessage";
+import { errorCodeToMessageList } from "./../constants/errorCodeToMessage";
 import { extractPanic } from "./extractPanic";
 
 // extract error code from error string for example [Error Code: 1007] ...
@@ -14,10 +14,12 @@ export const extractFlowErrorMessage = (error: string) => {
   } else {
     const errorCodeArray = err.match(/(?<=\[Error Code: )(.*)(?=\])/gm);
 
-    return errorCodeArray &&
-      errorCodeArray.length > 0 &&
-      errorCodeToMessage[errorCodeArray[0]]
-      ? errorCodeToMessage[errorCodeArray[0]]
-      : "an error ocurred";
+    const extractedError =
+      errorCodeArray &&
+      errorCodeToMessageList[
+        errorCodeArray[0] as unknown as keyof typeof errorCodeToMessageList
+      ];
+
+    return extractedError ? extractedError : "an error ocurred";
   }
 };

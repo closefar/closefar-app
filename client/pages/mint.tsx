@@ -5,10 +5,9 @@ import {
   Step,
   Stepper,
 } from "@material-tailwind/react";
-import React, { useState } from "react";
+import React, { DragEventHandler, useState } from "react";
 import BreakLine from "../components/BreakLine";
 import * as transactions from "@transactions";
-import useCurrentUser from "hooks/useCurrentUser";
 import { nestAxios, nestAxiosToken } from "config/axios";
 import isLogin from "components/IsLogin";
 import countryList from "../constants/list-of-country";
@@ -21,10 +20,11 @@ import { useRouter } from "next/router";
 import useSWRMutation from "swr/mutation";
 import { useAlertDispatch } from "context/AlertContext";
 import { z } from "zod";
-import { apiPath, flowdriveLink } from "constants/constants";
+import { flowdriveLink, s3BaseAddress } from "constants/constants";
 import { extractFlowErrorMessage } from "lib/extractFlowErrorMessage";
 import ImageOfVideo from "components/ImageOfVideo";
 import Link from "next/link";
+import * as api from "@api";
 
 const Mint = () => {
   const router = useRouter();
@@ -71,7 +71,7 @@ const Mint = () => {
   const [isLastStep, setIsLastStep] = useState(false);
   const [isFirstStep, setIsFirstStep] = useState(false);
 
-  const [file, setFile] = useState<File>();
+  const [file, setFile] = useState<File | undefined>();
   const [progress, setProgress] = useState(0);
   const [isUploadDone, setIsUploadDone] = useState(false);
 
@@ -103,29 +103,31 @@ const Mint = () => {
     if (parsedForm.success) setActiveStep((cur) => cur + 1);
     else
       parsedForm.error.issues.forEach((error) =>
-        error.path.forEach((path) => errorObject[path].push(error.message))
+        error.path.forEach((path) =>
+          errorObject[path as keyof typeof errorObject].push(error.message)
+        )
       );
     setError(errorObject);
   };
 
   const handlePrev = () => !isFirstStep && setActiveStep((cur) => cur - 1);
 
-  const onDropHandler = (ev) => {
+  const onDropHandler: DragEventHandler<HTMLDivElement> = (ev) => {
     ev.preventDefault();
     const newFile = ev.dataTransfer.files[0];
     setFile(newFile);
     setDragging(false);
   };
 
-  const onDragOver = (ev) => {
+  const onDragOver: DragEventHandler<HTMLDivElement> = (ev) => {
     ev.preventDefault();
     setDragging(true);
   };
-  const onDragEnter = (ev) => {
+  const onDragEnter: DragEventHandler<HTMLDivElement> = (ev) => {
     ev.preventDefault();
     setDragging(true);
   };
-  const onDragLeave = (ev) => {
+  const onDragLeave: DragEventHandler<HTMLDivElement> = (ev) => {
     ev.preventDefault();
     setDragging(false);
   };
@@ -133,31 +135,20 @@ const Mint = () => {
   const { trigger: upload, data: fileLink } = useSWRMutation(
     "/api/uploads",
     async () => {
+      if (!file) return;
       setActiveStep((cur) => cur + 1);
       // upload image to server and get name and produce link of it
+      const {
+        data: { uploadUrl, key },
+      } = await api.getSignedUrl(file.name);
+
       const fd = new FormData();
       fd.set("file", file);
 
-      const {
-        data: { uploadUrl, key },
-      } = await nestAxiosToken.post("/aws/get-signed-url", {
-        fileName: file.name,
-      });
-      await nestAxios.put(uploadUrl, fd.get("file"), {
-        onUploadProgress(pge) {
-          console.log(pge);
-          console.log(pge.progress);
-          let percentage = Math.floor((pge.loaded * 100) / pge.total);
-          percentage = percentage < 100 ? percentage + 1 : 100;
-          setProgress(percentage);
-        },
-        headers: {
-          "Content-Type": file?.type || "video/mp4",
-        },
-      });
+      const res = await api.uploadFile(uploadUrl, fd.get("file"), setProgress);
       setIsUploadDone(true);
-      const fileLink =
-        "https://testnet-closefar.s3.ca-central-1.amazonaws.com/" + key;
+
+      const fileLink = `${s3BaseAddress}/${key}`;
       return fileLink;
     },
     {
@@ -172,13 +163,13 @@ const Mint = () => {
     "/transactions/mint-nft",
     async () => {
       // now mint nft with name and link of nft for current user
-      const { txId } = await transactions.mintNFT(
-        // currentUser.addr,
-        {
-          ...formData,
-          url: fileLink,
-        }
-      );
+      const res = fileLink
+        ? await transactions.mintNFT({
+            ...formData,
+            url: fileLink,
+          })
+        : undefined;
+
       alertDispatch({
         type: "open",
         message: (
@@ -186,7 +177,7 @@ const Mint = () => {
             {"NFT minted. to follow transaction "}
             <Link
               className="text-light-blue-900"
-              href={flowdriveLink + txId}
+              href={flowdriveLink + res?.txId}
               target="_blank"
             >
               click here
@@ -233,7 +224,7 @@ const Mint = () => {
           file ? (
             <div className="md:w-1/3 sm:w-1/2 w-2/3 self-center relative">
               <button
-                onClick={() => setFile(null)}
+                onClick={() => setFile(undefined)}
                 className="w-[10%] aspect-square absolute top-0 text-[#212925] text-xs right-0 rounded-full bg-red-500 z-10 leading-none p-1 translate-x-1/2 -translate-y-1/2"
               >
                 X
@@ -266,7 +257,9 @@ const Mint = () => {
                 id="file_picker"
                 type="file"
                 accept="video/mp4"
-                onChange={(ev) => setFile(ev.target.files[0])}
+                onChange={(ev) =>
+                  setFile(ev.target.files ? ev.target.files[0] : undefined)
+                }
                 style={{ display: "none" }}
               ></input>
             </div>
@@ -286,7 +279,9 @@ const Mint = () => {
                     setFormData((prev) => ({ ...prev, name: e.target.value }))
                   }
                 />
-                <BreakLine error={error?.name.length > 0} />
+                <BreakLine
+                  error={error?.name.length ? error.name.length > 0 : undefined}
+                />
                 <div className="text-red-500 text-xs ml-[5%]">
                   {error?.name?.map((err) => (
                     <span key={err}>{err}</span>
@@ -375,7 +370,11 @@ const Mint = () => {
                     setFormData((prev) => ({ ...prev, state: e.target.value }))
                   }
                 />
-                <BreakLine error={error?.state.length > 0} />
+                <BreakLine
+                  error={
+                    error?.state.length ? error.state.length > 0 : undefined
+                  }
+                />
                 <div className="text-red-500 text-xs ml-[5%]">
                   {error?.state?.map((err) => (
                     <span key={err}>{err}</span>
@@ -420,7 +419,9 @@ const Mint = () => {
                     setFormData((prev) => ({ ...prev, job: e.target.value }))
                   }
                 />
-                <BreakLine error={error?.job.length > 0} />
+                <BreakLine
+                  error={error?.job.length ? error.name.length > 0 : undefined}
+                />
                 <div className="text-red-500 text-xs ml-[5%]">
                   {error?.job?.map((err) => (
                     <span key={err}>{err}</span>
@@ -479,7 +480,7 @@ const Mint = () => {
           <div className="flex sm:flex-row sm:items-start flex-col items-center gap-3">
             <div className="md:w-1/3 sm:w-1/2 w-2/3">
               <ImageOfVideo
-                src={URL.createObjectURL(file)}
+                src={file ? URL.createObjectURL(file) : ""}
                 alt=""
                 width={300}
                 height={300}

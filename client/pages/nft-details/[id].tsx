@@ -25,9 +25,12 @@ const NFTDetails = () => {
     data: NFTDetails,
     isLoading,
     isValidating,
-  } = useSWR<INFT>(
+  } = useSWR<INFT | undefined>(
     currentUser.addr && id ? ["/scripts/getNftDetails", id] : null,
-    () => scripts.getNFTDetails(currentUser.addr, parseInt(id)),
+    () =>
+      currentUser.addr
+        ? scripts.getNFTDetails(currentUser.addr, parseInt(id))
+        : undefined,
     {
       onError(err, key, config) {
         console.log(err);

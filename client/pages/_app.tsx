@@ -5,8 +5,15 @@ import DefaultLayout from "../layouts/DefaultLayout";
 import "../config/fcl";
 import { AlertProvider } from "context/AlertContext";
 import Head from "next/head";
+import { JSXElementConstructor, ReactNode } from "react";
 
-function MyApp({ Component, pageProps }) {
+function MyApp({
+  Component,
+  pageProps,
+}: {
+  Component: JSXElementConstructor<any>;
+  pageProps: any;
+}) {
   return (
     <div className="text-[#212925] font-ysabeau">
       <Head>

@@ -1,8 +1,7 @@
 import { Option, Select, Spinner } from "@material-tailwind/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import BreakLine from "../components/BreakLine";
 import * as scripts from "@scripts";
-import * as transactions from "@transactions";
 import * as api from "@api";
 import useCurrentUser from "hooks/useCurrentUser";
 import isLogin from "components/IsLogin";
@@ -19,15 +18,15 @@ const MyCollections = () => {
 
   const alertDispatch = useAlertDispatch();
 
-  const { data: NFTs, isLoading: nftLoading } = useSWR<INFT[]>(
+  const { data: NFTs, isLoading: nftLoading } = useSWR<INFT[] | undefined>(
     currentUser.addr ? "/scripts/getNfts" : null,
-    () => scripts.getNFTs(currentUser.addr),
+    () => (currentUser.addr ? scripts.getNFTs(currentUser.addr) : undefined),
     {
       onError(err, key, config) {
         console.log(err);
         alertDispatch({
           type: "open",
-          message: extractFlowErrorMessage(err),
+          message: extractFlowErrorMessage(String(err)),
           class: "error",
         });
       },
@@ -64,9 +63,9 @@ const MyCollections = () => {
     isLoading: existenceLoading,
     mutate: getListingExistence,
     isValidating: isExistenceValidating,
-  } = useSWR<api.IIsListingExistRes>(
+  } = useSWR<api.IIsListingExistRes | undefined>(
     NFTs && NFTs.length > 0 ? "/api/listing/is-listings-exist" : null,
-    () => api.isListingsExist(NFTs.map((nft) => nft.id)),
+    () => NFTs && api.isListingsExist(NFTs.map((nft) => nft.id)),
     {
       onError(err, key, config) {
         console.log(err);
@@ -117,7 +116,7 @@ const MyCollections = () => {
               className="[&>span]:pl-8"
               variant="static"
               value={value}
-              onChange={(val) => setValue(val)}
+              onChange={(val) => setValue(val || "")}
             >
               <Option className="font-ysabeau" value="all">
                 All

@@ -1,6 +1,5 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import * as fcl from "@onflow/fcl";
 import useCurrentUser from "hooks/useCurrentUser";
 import * as scripts from "@scripts";
 import { useAlertDispatch } from "context/AlertContext";

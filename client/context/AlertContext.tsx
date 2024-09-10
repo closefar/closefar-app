@@ -6,14 +6,15 @@ import {
   useReducer,
 } from "react";
 
-const AlertContext = createContext<Alert[]>(null);
+const AlertContext = createContext<Alert[]>([]);
 
-const AlertDispatchContext =
-  createContext<(data: CloseAction | OpenAction) => void>(null);
+const AlertDispatchContext = createContext<
+  (data: CloseAction | OpenAction) => void
+>(() => {});
 
 let alertDispatch: Dispatch<CloseAction | OpenAction>;
 
-export function AlertProvider({ children }) {
+export function AlertProvider({ children }: { children: ReactNode }) {
   const [alert, dispatch] = useReducer(alertReducer, initialAlert);
   alertDispatch = dispatch;
   return (

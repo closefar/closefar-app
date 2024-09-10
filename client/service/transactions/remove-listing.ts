@@ -1,4 +1,5 @@
 import * as fcl from "@onflow/fcl";
+import * as t from "@onflow/types";
 import REMOVE_LISTING from "../../cadence/transactions/storefront/remove_item.cdc";
 import { replaceImportPathWithAddress } from "lib/replaceImportPathWithAddress";
 
@@ -13,7 +14,7 @@ export const removeListing = async (listingResourceID: number) => {
 
   const txId = await fcl.mutate({
     cadence: transaction,
-    args: (arg, t) => [arg(listingResourceID, t.UInt64)],
+    args: () => [fcl.arg(listingResourceID, t.UInt64)],
     limit: 999,
   });
   const txStatus = await fcl.tx(txId).onceSealed();

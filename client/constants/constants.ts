@@ -1,18 +1,25 @@
+export const ACCESS_NODE_URLS = {
+  local: "http://localhost:8888",
+  testnet: "https://rest-testnet.onflow.org",
+  mainnet: "https://rest-mainnet.onflow.org",
+};
+
+export const BLOCK_EXPLORER_URLS = {
+  testnet: "https://testnet.flowscan.org",
+  mainnet: "https://flowscan.org",
+};
+
 export const delayTimeForEventHandler = 7000;
 
+export const flowNetwork =
+  (process.env.NEXT_PUBLIC_FLOW_NETWORK as keyof typeof ACCESS_NODE_URLS) ||
+  "local";
+
 export const adminAddress = process.env.NEXT_PUBLIC_ADMIN_ADDRESS;
-// if (!process.env.NEXT_PUBLIC_ADMIN_ADDRESS)
-//   throw new Error("admin address environment variable doesn't set");
-
 export const adminCommission = process.env.NEXT_PUBLIC_ADMIN_COMMISSION;
-// if (!process.env.NEXT_PUBLIC_ADMIN_COMMISSION)
-//   throw new Error("admin commission environment variable doesn't set");
-
 export const apiPath = process.env.NEXT_PUBLIC_API_PATH;
-// if (!process.env.NEXT_PUBLIC_API_PATH)
-//   throw new Error("api path environment variable doesn't set");
-
 export const flowdriveLink = "https://testnet.flowdiver.io/tx/";
+export const s3BaseAddress = process.env.NEXT_PUBLIC_S3_BASE_ADDRESS;
 
 export const contracts = {
   CapabilityDelegator: {
@@ -20,6 +27,7 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "294e44e1ec6993c6",
+      mainnet: "",
     },
   },
   CapabilityFactory: {
@@ -27,6 +35,7 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "294e44e1ec6993c6",
+      mainnet: "",
     },
   },
   CapabilityFilter: {
@@ -34,6 +43,7 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "294e44e1ec6993c6",
+      mainnet: "",
     },
   },
   CloseFarNFT: {
@@ -41,6 +51,7 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "99b1a12bc9c2c1b4",
+      mainnet: "",
     },
   },
   FTAllFactory: {
@@ -48,6 +59,7 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "294e44e1ec6993c6",
+      mainnet: "",
     },
   },
   FTBalanceFactory: {
@@ -55,6 +67,7 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "294e44e1ec6993c6",
+      mainnet: "",
     },
   },
   FTProviderFactory: {
@@ -62,6 +75,7 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "294e44e1ec6993c6",
+      mainnet: "",
     },
   },
   FTReceiverBalanceFactory: {
@@ -69,6 +83,7 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "294e44e1ec6993c6",
+      mainnet: "",
     },
   },
   FTReceiverFactory: {
@@ -76,6 +91,7 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "294e44e1ec6993c6",
+      mainnet: "",
     },
   },
   FungibleTokenMetadataViews: {
@@ -83,6 +99,7 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "9a0766d93b6608b7",
+      mainnet: "",
     },
   },
   FlowToken: {
@@ -90,6 +107,7 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "7e60df042a9c0868",
+      mainnet: "",
     },
   },
   FungibleToken: {
@@ -97,6 +115,7 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "9a0766d93b6608b7",
+      mainnet: "",
     },
   },
   HybridCustody: {
@@ -104,6 +123,7 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "294e44e1ec6993c6",
+      mainnet: "",
     },
   },
   MetadataViews: {
@@ -111,6 +131,7 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "631e88ae7f1d7c20",
+      mainnet: "",
     },
   },
   NFTCatalog: {
@@ -118,6 +139,7 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "324c34e1c517e4db",
+      mainnet: "",
     },
   },
   NFTCollectionPublicFactory: {
@@ -125,6 +147,7 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "294e44e1ec6993c6",
+      mainnet: "",
     },
   },
   NFTProviderAndCollectionFactory: {
@@ -132,6 +155,7 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "294e44e1ec6993c6",
+      mainnet: "",
     },
   },
   NFTProviderFactory: {
@@ -139,12 +163,15 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "294e44e1ec6993c6",
+      mainnet: "",
     },
   },
   NFTStorefront: {
     path: '"../../contracts/NFTStorefront.cdc"',
     address: {
       local: "f8d6e0586b0a20c7",
+      testnet: "99b1a12bc9c2c1b4",
+      mainnet: "",
     },
   },
   NFTStorefrontV2: {
@@ -152,6 +179,7 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "99b1a12bc9c2c1b4",
+      mainnet: "",
     },
   },
   NonFungibleToken: {
@@ -159,6 +187,7 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "631e88ae7f1d7c20",
+      mainnet: "",
     },
   },
   ViewResolver: {
@@ -166,6 +195,7 @@ export const contracts = {
     address: {
       local: "f8d6e0586b0a20c7",
       testnet: "631e88ae7f1d7c20",
+      mainnet: "",
     },
   },
   Burner: {
@@ -173,6 +203,7 @@ export const contracts = {
     address: {
       local: "ce45dd06c2f77f71",
       testnet: "f233dcee88fe0abe",
+      mainnet: "",
     },
   },
 };

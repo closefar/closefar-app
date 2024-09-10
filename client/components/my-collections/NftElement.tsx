@@ -26,9 +26,9 @@ const NftElement: React.FC<INftElement> = ({
   const { trigger: removeTrigger, isMutating: isRemoving } = useSWRMutation(
     "/transactions/remove-listing",
     async () => {
-      // if (!isListingExist) return;
-
-      const { txId } = await transactions.removeListing(+listingId);
+      const res = listingId
+        ? await transactions.removeListing(+listingId)
+        : undefined;
 
       alertDispatch({
         type: "open",
@@ -37,7 +37,7 @@ const NftElement: React.FC<INftElement> = ({
             {"listing removed.. to follow transaction "}
             <Link
               className="text-light-blue-900"
-              href={flowdriveLink + txId}
+              href={flowdriveLink + res?.txId}
               target="_blank"
             >
               click here
@@ -95,7 +95,7 @@ const NftElement: React.FC<INftElement> = ({
               !isListingExist ? "cursor-not-allowed" : ""
             }
       `}
-            onClick={removeTrigger}
+            onClick={() => removeTrigger()}
           >
             {isRemoving ? (
               <Spinner className="h-4 w-4" />

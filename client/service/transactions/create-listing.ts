@@ -1,4 +1,5 @@
 import * as fcl from "@onflow/fcl";
+import * as t from "@onflow/types";
 import SELL_ITEM_WITH_MARKETPLACE_CUT from "../../cadence/transactions/storefront/sell_item_with_marketplace_cut.cdc";
 import { replaceImportPathWithAddress } from "lib/replaceImportPathWithAddress";
 
@@ -25,13 +26,13 @@ export const createListing = async (
 
   const txId = await fcl.mutate({
     cadence: transaction,
-    args: (arg, t) => [
-      arg(saleItemID, t.UInt64),
-      arg(saleItemPrice, t.UFix64),
-      arg(customID, t.Optional(t.String)),
-      arg(expiry, t.UInt64),
-      arg(marketPlaceSaleCutReceiver, t.Address),
-      arg(marketPlaceSaleCutPercentage, t.UFix64),
+    args: () => [
+      fcl.arg(saleItemID, t.UInt64),
+      fcl.arg(saleItemPrice, t.UFix64),
+      fcl.arg(customID, t.Optional(t.String)),
+      fcl.arg(expiry, t.UInt64),
+      fcl.arg(marketPlaceSaleCutReceiver, t.Address),
+      fcl.arg(marketPlaceSaleCutPercentage, t.UFix64),
     ],
     limit: 999,
   });

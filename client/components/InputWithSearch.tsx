@@ -4,7 +4,7 @@ import { Option, Select } from "@material-tailwind/react";
 
 interface IInputWithSearch {
   value: string;
-  setValue: (value) => void;
+  setValue: (value: string) => void;
   data: string[];
   label: string;
   error?: string[];
@@ -17,7 +17,7 @@ const InputWithSearch: React.FC<IInputWithSearch> = ({
   label,
   error,
 }) => {
-  const select = useRef<HTMLDivElement>();
+  const select = useRef<HTMLDivElement>(null);
 
   const [options, setOptions] = useState(data);
   const [search, setSearch] = useState("");
@@ -29,13 +29,13 @@ const InputWithSearch: React.FC<IInputWithSearch> = ({
   }, [data, search]);
 
   const onFocus = () => {
-    const btn = select.current.children[0] as HTMLButtonElement;
+    const btn = select.current?.children[0] as HTMLButtonElement;
     if (btn.ariaExpanded === "true") return;
     btn.click();
   };
 
   const onSearch = (inputValue: string) => {
-    setValue(undefined);
+    setValue("");
     setSearch(inputValue);
   };
 
@@ -65,7 +65,7 @@ const InputWithSearch: React.FC<IInputWithSearch> = ({
           variant="static"
           ref={select}
           value={value}
-          onChange={(val) => setValue(val)}
+          onChange={(val) => setValue(val || "")}
         >
           {options.map((option) => (
             <Option key={option} className="font-ysabeau" value={option}>
@@ -74,7 +74,7 @@ const InputWithSearch: React.FC<IInputWithSearch> = ({
           ))}
         </Select>
       </div>
-      <BreakLine error={error?.length > 0} />
+      <BreakLine error={(error?.length || 0) > 0} />
       <div className="text-red-500 text-xs ml-[5%]">
         {error?.map((err) => (
           <span key={err}>{err}</span>

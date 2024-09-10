@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import BreakLine from "./BreakLine";
 import useCurrentUser from "../hooks/useCurrentUser";
 import * as fcl from "@onflow/fcl";
@@ -10,7 +10,6 @@ import * as api from "@api";
 import {
   Menu,
   MenuHandler,
-  Button,
   MenuList,
   MenuItem,
   Spinner,
@@ -19,7 +18,7 @@ import { extractFlowErrorMessage } from "lib/extractFlowErrorMessage";
 import useSWR from "swr";
 import { useAlertDispatch } from "context/AlertContext";
 import useSWRMutation from "swr/mutation";
-import { nestAxiosToken } from "config/axios";
+import { Service } from "@onflow/typedefs";
 
 const Navbar = () => {
   const currentUser = useCurrentUser();
@@ -32,7 +31,7 @@ const Navbar = () => {
       async (key, options) => {
         const user = await fcl.authenticate();
         const accountProofService = user.services.find(
-          (service) => service.type === "account-proof"
+          (service: Service) => service.type === "account-proof"
         );
         const isVerify = await fcl.AppUtils.verifyAccountProof(
           "closefar",
@@ -58,9 +57,9 @@ const Navbar = () => {
   const { isLoading: isSetupingAccount } = useSWR(
     currentUser.addr ? "/transactions/setup-account" : null,
     async () => {
-      const status = await scripts.isSetupAndCreatedStorefront(
-        currentUser.addr
-      );
+      const status =
+        currentUser.addr &&
+        (await scripts.isSetupAndCreatedStorefront(currentUser.addr));
 
       (!status.setup || !status.storefront) &&
         (await transactions.setupAccountAndCreateStorefront());
@@ -109,7 +108,7 @@ const Navbar = () => {
         </div>
         <ul className="flex items-center justify-end">
           {!currentUser.loggedIn ? (
-            <li onClick={authenticate} className="cursor-pointer">
+            <li onClick={() => authenticate()} className="cursor-pointer">
               Connect Wallet
             </li>
           ) : (

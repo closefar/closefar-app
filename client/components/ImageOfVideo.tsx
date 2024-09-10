@@ -10,10 +10,10 @@ interface ImageOfVideo {
 
 const ImageOfVideo: React.FC<ImageOfVideo> = (data) => {
   const [isLoad, setIsLoad] = useState(false);
-  const video = useRef<HTMLVideoElement>();
+  const video = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    video.current.load();
+    video.current?.load();
   }, []);
 
   return (
