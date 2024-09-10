@@ -10,7 +10,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <div className="text-[#212925] font-ysabeau">
       <Head>
-        <link rel="icon" type="image/png" href="/logo.png" />
+        <link rel="icon" type="image/png" href="/closefar-watch-icon.png" />
       </Head>
       <AlertProvider>
         <DefaultLayout>

@@ -137,16 +137,22 @@ const Mint = () => {
       // upload image to server and get name and produce link of it
       const fd = new FormData();
       fd.set("file", file);
+
       const {
         data: { uploadUrl, key },
       } = await nestAxiosToken.post("/aws/get-signed-url", {
         fileName: file.name,
       });
-      const res = await nestAxios.put(uploadUrl, fd, {
-        onUploadProgress: (pge) => {
+      await nestAxios.put(uploadUrl, fd.get("file"), {
+        onUploadProgress(pge) {
+          console.log(pge);
+          console.log(pge.progress);
           let percentage = Math.floor((pge.loaded * 100) / pge.total);
           percentage = percentage < 100 ? percentage + 1 : 100;
           setProgress(percentage);
+        },
+        headers: {
+          "Content-Type": file?.type || "video/mp4",
         },
       });
       setIsUploadDone(true);
