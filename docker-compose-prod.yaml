@@ -20,8 +20,6 @@ services:
       - ./server.env
     depends_on:
       - mongodb
-    volumes:
-      - images:/app/images
 
   client:
     build:
@@ -47,4 +45,3 @@ services:
 
 volumes:
   data:
-  images:
