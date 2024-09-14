@@ -3,13 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ListingModule } from './listing/listing.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { EventModule } from './event/event.module';
+// import { EventModule } from './event/event.module';
 import { FlowModule } from './flow/flow.module';
 import * as joi from 'joi';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UploadsModule } from './uploads/uploads.module';
-import { join } from 'path';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AwsModule } from './aws/aws.module';
@@ -64,16 +61,11 @@ const jwtModule = JwtModule.registerAsync({
     configModule,
     mongooseModule,
     ListingModule,
-    EventModule,
+    // EventModule,
     flowModule,
-    UploadsModule,
     AuthModule,
     jwtModule,
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'images'),
-      serveRoot: '/images',
-      renderPath: '/images',
-    }),
+
     AwsModule,
   ],
   controllers: [AppController],

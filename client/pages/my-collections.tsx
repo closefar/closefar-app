@@ -30,6 +30,7 @@ const MyCollections = () => {
           class: "error",
         });
       },
+      revalidateOnFocus: false,
     }
   );
   // const { data: listingFromFlow, isLoading: listingFromFlowLoading } = useSWR(
@@ -71,6 +72,7 @@ const MyCollections = () => {
         console.log(err);
         alertDispatch({ type: "open", message: err.message, class: "error" });
       },
+      revalidateOnFocus: false,
     }
   );
 

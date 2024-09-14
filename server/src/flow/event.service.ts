@@ -1,4 +1,4 @@
-import { FlowService } from './../flow/flow.service';
+import { FlowService } from './flow.service';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -121,7 +121,7 @@ export class EventService {
         currentBlockHeight: toBlock,
       });
     } catch (error) {
-      console.error("this is error",error);
+      console.error('this is error', error);
     } finally {
       // recursively call self to continue polling
       setTimeout(() => this.poll(), this.stepTimeMs);

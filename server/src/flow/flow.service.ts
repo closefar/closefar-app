@@ -1,11 +1,14 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import * as fcl from '@onflow/fcl';
+import * as t from '@onflow/types';
 import { INftDetails } from 'src/types/types';
 import { ec as EC } from 'elliptic';
 import { SHA3 } from 'sha3';
-import { ACCESS_NODE_URLS } from 'src/constants/constants';
+import { ACCESS_NODE_URLS, contracts } from 'src/constants/constants';
 import { FlowModuleOptions } from './flow.interface';
 import { MODULE_OPTIONS_TOKEN } from './flow.module-definition';
+import GET_NFT_DETAILS from '../../cadence/scripts/nft/get_nft_details.cdc';
+import GET_LISTING_DETAILS from '../../cadence/scripts/read_listing_details.cdc';
 
 @Injectable()
 export class FlowService implements OnModuleInit {
@@ -119,54 +122,20 @@ export class FlowService implements OnModuleInit {
     ownerAddress: string,
     nftId: string,
   ): Promise<INftDetails> {
+    const script = this.replaceImportPathWithAddress(GET_NFT_DETAILS);
     return fcl.query({
-      cadence: `
-        // import CloseFarNFT from 0xf8d6e0586b0a20c7
-        // import NonFungibleToken from 0xf8d6e0586b0a20c7
-        // import MetadataViews from 0xf8d6e0586b0a20c7
-
-        import NonFungibleToken from 0x631e88ae7f1d7c20
-        import CloseFarNFT from 0x99b1a12bc9c2c1b4
-        import MetadataViews from 0x631e88ae7f1d7c20
-        
-        access(all) fun main(address: Address, id: UInt64): &{NonFungibleToken.NFT} {
-          let account = getAccount(address)
-
-          let CollectionPublic = account.capabilities.borrow<&{NonFungibleToken.Collection}>(
-                  CloseFarNFT.CollectionPublicPath
-              ) ?? panic("Could not borrow capability from collection at this address")
-
-            let NFT = CollectionPublic.borrowNFT(id) ?? panic("There is no NFT with this id")
-        return NFT 
-}
-      `,
-      args: (arg, t) => [arg(ownerAddress, t.Address), arg(nftId, t.UInt64)],
+      cadence: script,
+      args: () => [fcl.arg(ownerAddress, t.Address), fcl.arg(nftId, t.UInt64)],
     });
   }
 
   async getListingDetails(ownerAddress: string, listingId: string) {
+    const script = this.replaceImportPathWithAddress(GET_LISTING_DETAILS);
     return fcl.query({
-      cadence: `
-      // import NFTStorefrontV2 from 0xf8d6e0586b0a20c7
-      import NFTStorefrontV2 from 0x99b1a12bc9c2c1b4
-
-
-      // This script returns the details for a listing within a storefront
-      
-      access(all) fun main(account: Address, listingResourceID: UInt64): NFTStorefrontV2.ListingDetails {
-        let storefrontRef = getAccount(account).capabilities.borrow<&{NFTStorefrontV2.StorefrontPublic}>(
-                NFTStorefrontV2.StorefrontPublicPath
-            ) ?? panic("Could not borrow public storefront from address")
-        let listing = storefrontRef.borrowListing(listingResourceID: listingResourceID)
-            ?? panic("No listing with that ID")
-      
-      return listing.getDetails()
-}
-      
-      `,
-      args: (arg, t) => [
-        arg(ownerAddress, t.Address),
-        arg(listingId, t.UInt64),
+      cadence: script,
+      args: () => [
+        fcl.arg(ownerAddress, t.Address),
+        fcl.arg(listingId, t.UInt64),
       ],
     });
   }
@@ -175,17 +144,26 @@ export class FlowService implements OnModuleInit {
     return fcl.AppUtils.verifyAccountProof('closefar', accountProofData);
   }
 
+  replaceImportPathWithAddress(str: string) {
+    const listOfImportedContracts = str.match(/(?<=import)(.*)(?=from)/gm);
+
+    listOfImportedContracts?.forEach((contract) => {
+      const address =
+        contracts[contract.trim() as keyof typeof contracts].address[
+          this.options.network
+        ];
+      str = str.replace(
+        new RegExp(
+          String.raw`(?<=import\s${contract.trim()}\sfrom\s)(".+")(?=\s*\n+)`,
+          'gm',
+        ),
+        fcl.withPrefix(address),
+      );
+    });
+    return str;
+  }
+
   onModuleInit() {
-    // .config({
-    //   // 'flow.network': 'local',
-    //   // 'accessNode.api': 'http://localhost:8888',
-    //   // 'discovery.wallet': `http:/localhost:8701/fcl/authn`,
-    //   // 'app.detail.icon':
-    //   //   'https://avatars.githubusercontent.com/u/62387156?v=4',
-    //   // 'app.detail.title': 'FCL Next Scaffold',
-    //   'flow.network': 'testnet',
-    //   'accessNode.api': 'https://rest-testnet.onflow.org',
-    // });
     console.log(`app running on ${this.options.network}`);
     const accessApi = ACCESS_NODE_URLS[this.options.network];
     fcl
